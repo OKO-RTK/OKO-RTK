@@ -1,6 +1,3 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import AuthBody from './pages/authorization/AuthBody'
 import AuthFooter from './pages/authorization/AuthFooter'
 import AuthHeader from './pages/authorization/AuthHeader'
