@@ -26,7 +26,7 @@ const closeButtonStyle: React.CSSProperties = {
     border: 'none',
     color: '#fff',
     fontSize: 20,
-    cursor: 'pointer',
+    cursor: 'pointer',   
 };
 
 const EquipmentErrorAlert: React.FC<AlertProps> = ({ message, onClose }) => (

@@ -4,17 +4,21 @@ import viteLogo from '/vite.svg'
 import AuthBody from './pages/authorization/AuthBody'
 import AuthFooter from './pages/authorization/AuthFooter'
 import AuthHeader from './pages/authorization/AuthHeader'
+
 import './App.css'
+import TabsDemo from "./features/auth/auth"
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
 		<>
 			<div className='flex flex-col border-2 border-red-500 w-screen'>
-				<AuthHeader/>
+				<AuthHeader />
 			</div>
-      <AuthBody/>
+			<div>
+				<TabsDemo />
+			</div>
+			<AuthBody />
 			<AuthFooter></AuthFooter>
 		</>
 	)
