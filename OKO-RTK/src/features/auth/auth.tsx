@@ -56,7 +56,7 @@ export function TabsDemo() {
               />
             </CardContent>
             <CardFooter className="flex flex-col space-y-2">
-              <Button className="w-full">Войти</Button>
+              <Button className="w-full !bg-[#7700FF]">Войти</Button>
               <TabsList className="grid w-full grid-cols-1">
                 <TabsTrigger
                   value="inter-password"
@@ -111,7 +111,7 @@ export function TabsDemo() {
               />
             </CardContent>
             <CardFooter className="flex flex-col space-y-2">
-              <Button className="w-full">Получить код</Button>
+              <Button className="w-full !bg-[#7700FF]">Получить код</Button>
               <TabsList className="grid w-full grid-cols-1">
                 <TabsTrigger
                   value="user"
