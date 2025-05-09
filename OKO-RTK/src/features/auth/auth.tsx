@@ -29,7 +29,7 @@ export function TabsDemo() {
 
             <CardContent className="space-y-4">
               {/* Переключатель ВНУТРИ формы */}
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-2 gap-x-4">
                 <TabsTrigger
                   value="user"
                   className="data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]"
@@ -59,7 +59,7 @@ export function TabsDemo() {
 
             <CardFooter className="flex flex-col space-y-2">
               <Button className="w-full !bg-[#7700FF]">Войти</Button>
-              <TabsList className="grid w-full grid-cols-1">
+              <TabsList className="grid w-full grid-cols-1 ">
                 <TabsTrigger
                   value="inter-password"
                   className="!bg-[#F7F0FF] text-[#7700FF] data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white"
@@ -82,7 +82,7 @@ export function TabsDemo() {
             </CardHeader>
             <CardContent className="space-y-2">
               {/* Переключатель такой же */}
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-2 gap-x-4">
                 <TabsTrigger
                   value="user"
                   className="data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]"
