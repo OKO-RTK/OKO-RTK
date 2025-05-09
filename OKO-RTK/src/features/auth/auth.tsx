@@ -15,16 +15,61 @@ const CustomTabs = () => {
 			fontFamily='RostelecomBasis'
 			borderRadius={15}
 		>
-			<Text color='black' fontSize='34px' fontWeight='700' mb={4}>
+			{/* <Text color='black' fontSize='34px' fontWeight='700' mb={4}>
+				Авторизация по коду
+			</Text> */}
+
+			{/* <Text fontSize='24px' mb={6} fontWeight={400} color='black'>
+				Укажите номер телефона, email или логин, и мы вышлем вам код
+				подтверждения
+			</Text> */}
+
+			{/* Табы */}
+			{/* <HStack mb={6}>
+				<Button
+					flex={1}
+					bg={activeTab === 'user' ? '#7700FF' : '#F7F0FF'}
+					color={activeTab === 'user' ? 'white' : '#7700FF'}
+					onClick={() => {
+						setActiveTab('user')
+						setIsPasswordLogin(false)
+					}}
+					_hover={{ bg: '#7700FF', color: 'white' }}
+					fontWeight='500'
+					fontSize='18px'
+					h='48px'
+					borderRadius={10}
+				>
+					Пользователь
+				</Button>
+				<Button
+					flex={1}
+					bg={activeTab === 'admin' ? '#7700FF' : '#F7F0FF'}
+					color={activeTab === 'admin' ? 'white' : '#7700FF'}
+					onClick={() => {
+						setActiveTab('admin')
+						setIsPasswordLogin(false)
+					}}
+					_hover={{ bg: '#7700FF', color: 'white' }}
+					fontWeight='500'
+					fontSize='18px'
+					h='48px'
+					borderRadius={10}
+				>
+					Админ
+				</Button>
+			</HStack> */}
+
+			{/* Контент табов */}
+			{!isPasswordLogin && activeTab === 'user' && (
+				<VStack spaceY={4}>
+					<Text color='black' fontSize='34px' fontWeight='700' mb={4}>
 				Авторизация по коду
 			</Text>
-
 			<Text fontSize='24px' mb={6} fontWeight={400} color='black'>
 				Укажите номер телефона, email или логин, и мы вышлем вам код
 				подтверждения
 			</Text>
-
-			{/* Табы */}
 			<HStack mb={6}>
 				<Button
 					flex={1}
@@ -59,10 +104,6 @@ const CustomTabs = () => {
 					Админ
 				</Button>
 			</HStack>
-
-			{/* Контент табов */}
-			{!isPasswordLogin && activeTab === 'user' && (
-				<VStack spaceY={4}>
 					<Input
 						placeholder='Телефон, почта или логин'
 						borderColor={'transparent'}
@@ -104,6 +145,47 @@ const CustomTabs = () => {
 
 			{isPasswordLogin && activeTab === 'user' && (
 				<VStack spaceY={4}>
+					<Text color='black' fontSize='34px' fontWeight='700' mb={4}>
+				Авторизация по паролю
+			</Text>
+			<Text fontSize='24px' mb={6} fontWeight={400} color='black'>
+				Укажите номер email или логин, и пароль от вашего аккаунта
+				
+			</Text>
+			<HStack mb={6}>
+				<Button
+					flex={1}
+					bg={activeTab === 'user' ? '#7700FF' : '#F7F0FF'}
+					color={activeTab === 'user' ? 'white' : '#7700FF'}
+					onClick={() => {
+						setActiveTab('user')
+						setIsPasswordLogin(false)
+					}}
+					_hover={{ bg: '#7700FF', color: 'white' }}
+					fontWeight='500'
+					fontSize='18px'
+					h='48px'
+					borderRadius={10}
+				>
+					Пользователь
+				</Button>
+				<Button
+					flex={1}
+					bg={activeTab === 'admin' ? '#7700FF' : '#F7F0FF'}
+					color={activeTab === 'admin' ? 'white' : '#7700FF'}
+					onClick={() => {
+						setActiveTab('admin')
+						setIsPasswordLogin(false)
+					}}
+					_hover={{ bg: '#7700FF', color: 'white' }}
+					fontWeight='500'
+					fontSize='18px'
+					h='48px'
+					borderRadius={10}
+				>
+					Админ
+				</Button>
+			</HStack>
 					<Input
 						placeholder='Логин или email'
 						borderColor={'transparent'}
@@ -142,7 +224,42 @@ const CustomTabs = () => {
 			)}
 
 			{activeTab === 'admin' && (
+				
 				<VStack>
+					<HStack mb={6}>
+				<Button
+					flex={1}
+					bg={activeTab === 'user' ? '#7700FF' : '#F7F0FF'}
+					color={activeTab === 'user' ? 'white' : '#7700FF'}
+					onClick={() => {
+						setActiveTab('user')
+						setIsPasswordLogin(false)
+					}}
+					_hover={{ bg: '#7700FF', color: 'white' }}
+					fontWeight='500'
+					fontSize='18px'
+					h='48px'
+					borderRadius={10}
+				>
+					Пользователь
+				</Button>
+				<Button
+					flex={1}
+					bg={activeTab === 'admin' ? '#7700FF' : '#F7F0FF'}
+					color={activeTab === 'admin' ? 'white' : '#7700FF'}
+					onClick={() => {
+						setActiveTab('admin')
+						setIsPasswordLogin(false)
+					}}
+					_hover={{ bg: '#7700FF', color: 'white' }}
+					fontWeight='500'
+					fontSize='18px'
+					h='48px'
+					borderRadius={10}
+				>
+					Админ
+				</Button>
+			</HStack>
 					<Input placeholder='Admin login' h='68px' bg='#F2F3F4' />
 					<Input placeholder='Пароль' h='68px' bg='#F2F3F4' type='password' />
 					<Button bg='#7700FF' color='white' w='full' h='60px' fontSize='20px'>
