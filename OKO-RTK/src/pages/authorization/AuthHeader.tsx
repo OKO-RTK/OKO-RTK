@@ -16,11 +16,11 @@ function Header() {
 					<Image
 						src='https://cdn.builder.io/api/v1/image/assets/TEMP/08ed317819c35661963ce24058ecb33e23bfad6b?placeholderIfAbsent=true&apiKey=f7374e46ea904925bc6fe48a550f93bc'
 						alt='ОКО Ростелеком logo'
-						boxSize='34px'
+						boxSize='56px'
 						objectFit='contain'
 					/>
 					<Text
-						fontSize='22px'
+						fontSize='24px'
 						fontWeight='700'
 						lineHeight='1.2'
 						color='black'

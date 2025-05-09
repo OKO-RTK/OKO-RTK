@@ -16,11 +16,13 @@ function AuthBody() {
         </div>
 
         <div className="w-full md:w-1/2 flex justify-center items-center p-4">
-          <img
+          <div className='border-red-400'>
+            <img
             src="/auth_art.png"
             alt="Арт"
             className="w-full h-auto max-h-[703px] object-contain"
-          />
+            />
+          </div>
         </div>
       </main>
 
