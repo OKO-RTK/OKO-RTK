@@ -30,7 +30,7 @@ const CustomTabs = () => {
 					bg={activeTab === 'user' ? '#7700FF' : '#F7F0FF'}
 					color={activeTab === 'user' ? 'white' : '#7700FF'}
 					onClick={() => setActiveTab('user')}
-					_hover={{ bg: '#7700FF', color: 'white' }}
+					_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)' }}
 					fontWeight='500'
 					fontSize='18px'
 					h='48px'
@@ -43,7 +43,7 @@ const CustomTabs = () => {
 					bg={activeTab === 'admin' ? '#7700FF' : '#F7F0FF'}
 					color={activeTab === 'admin' ? 'white' : '#7700FF'}
 					onClick={() => setActiveTab('admin')}
-					_hover={{ bg: '#7700FF', color: 'white' }}
+					_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)' }}
 					fontWeight='500'
 					fontSize='18px'
 					h='48px'
@@ -60,9 +60,11 @@ const CustomTabs = () => {
 						placeholder='Телефон, почта или логин'
 						borderColor={'transparent'}
 						bg='#F2F3F4'
+						color='black'
 						fontSize='22px'
 						_placeholder={{ opacity: 0.6 }}
 						h='68px'
+						outlineWidth={1}
 						borderRadius={10}
 					/>
 					<Button bg='#7700FF' color='white' w='full' h='68px' fontSize={22}>
@@ -95,12 +97,53 @@ const CustomTabs = () => {
 			)}
 
 			{activeTab === 'admin' && (
-				<VStack>
-					<Input placeholder='Admin login' h='68px' bg='#F2F3F4' />
-					<Input placeholder='Пароль' h='68px' bg='#F2F3F4' type='password' />
-					<Button bg='#7700FF' color='white' w='full' h='60px' fontSize='20px'>
+				<VStack spaceY={4}>
+					<Input
+						placeholder='Admin Login'
+						type='email'
+						borderColor={'transparent'}
+						bg='#F2F3F4'
+						color='black'
+						fontSize='22px'
+						_placeholder={{ opacity: 0.6 }}
+						h='68px'
+						outlineWidth={1}
+						borderRadius={10}
+					/>
+					<Input
+						placeholder='Пароль'
+						type='password'
+						borderColor={'transparent'}
+						bg='#F2F3F4'
+						color='black'
+						fontSize='22px'
+						_placeholder={{ opacity: 0.6 }}
+						h='68px'
+						outlineWidth={1}
+						borderRadius={10}
+					/>
+					<Button
+						bg='#7700FF'
+						color='white'
+						w='full'
+						h='68px'
+						fontSize='22px'
+						borderRadius={10}
+					>
 						Войти
 					</Button>
+					<Text fontWeight={500} fontSize={22} color='black'>
+						Нет аккаунта?{' '}
+						<Box
+							as='span'
+							color='#7700FF'
+							cursor='pointer'
+							fontWeight={500}
+							fontSize={22}
+						>
+							Зарегистрироваться
+						</Box>
+					</Text>
 				</VStack>
 			)}
 		</Box>
