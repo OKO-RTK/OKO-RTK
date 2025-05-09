@@ -9,7 +9,7 @@ function Header() {
 				/>
 				<p
 					className='font-rtk text-[22px]'
-					style={{ fontFamily: 'RostelecomBasis' }}
+					style={{ fontFamily: 'RostelecomBasis', fontWeight: 700 }}
 				>
 					ОКО
 					<br />
