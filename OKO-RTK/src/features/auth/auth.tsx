@@ -20,29 +20,30 @@ export function TabsDemo() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Tabs defaultValue="user" className="w-[400px]">
-        {/* Общий список вкладок */}
-        <TabsList className="grid w-full grid-cols-2 mb-4">
-          <TabsTrigger
-            value="user"
-            className="data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]"
-          >
-            Пользователь
-          </TabsTrigger>
-          <TabsTrigger
-            value="admin"
-            className="data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]"
-          >
-            Админ
-          </TabsTrigger>
-        </TabsList>
-
         {/* Пользователь */}
         <TabsContent value="user">
           <Card>
             <CardHeader>
               <CardTitle>Авторизация по паролю</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+
+            <CardContent className="space-y-4">
+              {/* Переключатель ВНУТРИ формы */}
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger
+                  value="user"
+                  className="data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]"
+                >
+                  Пользователь
+                </TabsTrigger>
+                <TabsTrigger
+                  value="admin"
+                  className="data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]"
+                >
+                  Админ
+                </TabsTrigger>
+              </TabsList>
+
               <Input
                 id="user-login"
                 placeholder="Телефон или почта"
@@ -55,6 +56,7 @@ export function TabsDemo() {
                 className="placeholder:opacity-60"
               />
             </CardContent>
+
             <CardFooter className="flex flex-col space-y-2">
               <Button className="w-full !bg-[#7700FF]">Войти</Button>
               <TabsList className="grid w-full grid-cols-1">
@@ -79,6 +81,22 @@ export function TabsDemo() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
+              {/* Переключатель такой же */}
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger
+                  value="user"
+                  className="data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]"
+                >
+                  Пользователь
+                </TabsTrigger>
+                <TabsTrigger
+                  value="admin"
+                  className="data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]"
+                >
+                  Админ
+                </TabsTrigger>
+              </TabsList>
+
               <div className="space-y-1">
                 <Label htmlFor="current">Текущий пароль</Label>
                 <Input id="current" type="password" />
@@ -89,7 +107,7 @@ export function TabsDemo() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button>Сохранить</Button>
+              <Button className="!bg-[#7700FF]">Сохранить</Button>
             </CardFooter>
           </Card>
         </TabsContent>
