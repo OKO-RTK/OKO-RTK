@@ -6,17 +6,19 @@ const CustomTabs = () => {
 
 	return (
 		<Box
-			maxH='703px'
+			className='shadow-[0_0px_15px_rgba(0,0,0,0.1)]'
 			p={8}
-			spaceY = {6}
+			spaceY={6}
 			rounded='2xl'
 			bg='white'
-			boxShadow='md'
 			fontFamily='RostelecomBasis'
+			borderRadius={15}
 		>
-			<p className='text-black !text-[32px]'>Авторизация по коду</p>
+			<Text color='black' fontSize='34px' fontWeight='700' mb={4}>
+				Авторизация по коду
+			</Text>
 
-			<Text fontSize='md' mb={6} color='gray.700'>
+			<Text fontSize='24px' mb={6} fontWeight={400} color='black'>
 				Укажите номер телефона, email или логин, и мы вышлем вам код
 				подтверждения
 			</Text>
@@ -32,6 +34,7 @@ const CustomTabs = () => {
 					fontWeight='500'
 					fontSize='18px'
 					h='48px'
+					borderRadius={10}
 				>
 					Пользователь
 				</Button>
@@ -44,6 +47,7 @@ const CustomTabs = () => {
 					fontWeight='500'
 					fontSize='18px'
 					h='48px'
+					borderRadius={10}
 				>
 					Админ
 				</Button>
@@ -51,15 +55,17 @@ const CustomTabs = () => {
 
 			{/* Контент табов */}
 			{activeTab === 'user' && (
-				<VStack>
+				<VStack spaceY={4}>
 					<Input
 						placeholder='Телефон, почта или логин'
+						borderColor={'transparent'}
 						bg='#F2F3F4'
-						fontSize='18px'
+						fontSize='22px'
 						_placeholder={{ opacity: 0.6 }}
-						h='52px'
+						h='68px'
+						borderRadius={10}
 					/>
-					<Button bg='#7700FF' color='white' w='full' h='60px' fontSize='20px'>
+					<Button bg='#7700FF' color='white' w='full' h='68px' fontSize={22}>
 						Получить код
 					</Button>
 					<Button
@@ -67,15 +73,21 @@ const CustomTabs = () => {
 						color='#7700FF'
 						bg='#F7F0FF'
 						w='full'
-						h='60px'
+						h='68px'
 						fontWeight='500'
-						fontSize='20px'
+						fontSize='22px'
 					>
 						Войти по паролю
 					</Button>
-					<Text fontSize='16px' color='black'>
+					<Text fontWeight={500} fontSize={22} color='black'>
 						Нет аккаунта?{' '}
-						<Box as='span' color='#7700FF' cursor='pointer'>
+						<Box
+							as='span'
+							color='#7700FF'
+							cursor='pointer'
+							fontWeight={500}
+							fontSize={22}
+						>
 							Зарегистрироваться
 						</Box>
 					</Text>
@@ -84,8 +96,8 @@ const CustomTabs = () => {
 
 			{activeTab === 'admin' && (
 				<VStack>
-					<Input placeholder='Admin login' h='52px' bg='#F2F3F4' />
-					<Input placeholder='Пароль' h='52px' bg='#F2F3F4' type='password' />
+					<Input placeholder='Admin login' h='68px' bg='#F2F3F4' />
+					<Input placeholder='Пароль' h='68px' bg='#F2F3F4' type='password' />
 					<Button bg='#7700FF' color='white' w='full' h='60px' fontSize='20px'>
 						Войти
 					</Button>
