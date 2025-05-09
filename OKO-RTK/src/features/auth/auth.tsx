@@ -25,9 +25,9 @@ export function TabsDemo() {
       >
         {/* Пользователь */}
         <TabsContent value='user' className='w-full h-full'>
-          <Card className='w-full h-full flex flex-col rounded-2xl p-6 space-y-6'>
+          <Card className='w-full h-full flex flex-col rounded-2xl p-10 space-y-6'>
             <CardHeader className="space-y-4">
-              <CardTitle className="text-[30px] text-center">Авторизация по паролю</CardTitle>
+              <CardTitle className="text-[34px] text-center">Авторизация по паролю</CardTitle>
             </CardHeader>
 
             <CardContent className='space-y-7 mb-12'> {/* Увеличено расстояние и добавлен отступ */}
@@ -60,14 +60,14 @@ export function TabsDemo() {
               />
             </CardContent>
 
-            <CardFooter className='flex flex-col space-y-6'> {/* Увеличено расстояние */}
-              <Button className='w-full !bg-[#7700FF] w-[405px] h-[68px]'>
+            <CardFooter className='flex flex-col space-y-9'> {/* Увеличено расстояние */}
+              <Button className='w-full !bg-[#7700FF]  h-[68px]'>
                 Войти
               </Button>
-              <TabsList className='grid w-full !bg-transparent'>
+              <TabsList className='w-full !bg-transparent'>
                 <TabsTrigger
                   value='inter-password'
-                  className='!bg-[#F7F0FF] text-[#7700FF] w-[405px] h-[68px] data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white'
+                  className='!bg-[#F7F0FF] text-[#7700FF]  w-full h-[68px] data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white'
                 >
                   Войти с помощью кода
                 </TabsTrigger>
