@@ -27,49 +27,53 @@ export function TabsDemo() {
         <TabsContent value='user' className='w-full h-full'>
           <Card className='w-full h-full flex flex-col rounded-2xl p-10 space-y-6'>
             <CardHeader className="space-y-4">
-              <CardTitle className="text-[34px] text-center">Авторизация по паролю</CardTitle>
+              <CardTitle className="text-[34px] text-center" style={{ fontFamily: 'RostelecomBasis', fontWeight: 700 }}>Авторизация по паролю</CardTitle>
             </CardHeader>
 
-            <CardContent className='space-y-7 mb-12'> {/* Увеличено расстояние и добавлен отступ */}
+            <CardContent className='space-y-7 mb-12' style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}> {/* Увеличено расстояние и добавлен отступ */}
               {/* Переключатель ВНУТРИ формы */}
               <TabsList className='grid w-full !bg-transparent grid-cols-2 gap-x-6'>
               <TabsTrigger
                 value='user'
                 className='data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]'
+                
               >
-                Пользователь
+                <div className="text-[18px]">Пользователь</div>
               </TabsTrigger>
               <TabsTrigger
                 value='admin'
                 className='data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]'
               >
-                Админ
+                <div className="text-[18px]">Админ</div>
               </TabsTrigger>
               </TabsList>
 
               <Input
               id='user-login'
               placeholder='Телефон или почта'
-              className='placeholder:opacity-60 !bg-[#F2F3F4] h-[33%]'
+              className='placeholder:opacity-60 !bg-[#F2F3F4] h-[33%] text-[18px]'
               />
               <Input
               id='user-password'
               placeholder='Пароль'
               type='password'
-              className='placeholder:opacity-60 !bg-[#F2F3F4] h-[33%]'
+              className='placeholder:opacity-60 !bg-[#F2F3F4] h-[33%] text-[18px]'
               />
             </CardContent>
 
             <CardFooter className='flex flex-col space-y-9'> {/* Увеличено расстояние */}
-              <Button className='w-full !bg-[#7700FF]  h-[68px]'>
-                Войти
+              <Button className='w-full !bg-[#7700FF]  h-[68px] ' 
+                      style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}
+              >
+                <div className="text-[20px]">Войти</div>
               </Button>
               <TabsList className='w-full !bg-transparent'>
                 <TabsTrigger
                   value='inter-password'
                   className='!bg-[#F7F0FF] text-[#7700FF]  w-full h-[68px] data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white'
+                  style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}
                 >
-                  Войти с помощью кода
+                  <div className="text-[20px]">Войти с помощью кода</div>
                 </TabsTrigger>
               </TabsList>
             </CardFooter>
