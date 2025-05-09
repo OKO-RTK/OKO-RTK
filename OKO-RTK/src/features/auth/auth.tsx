@@ -13,6 +13,7 @@ const CustomTabs = () => {
 			bg='white'
 			boxShadow='md'
 			fontFamily='RostelecomBasis'
+			
 		>
 			<p className='text-black !text-[32px]'>Авторизация по коду</p>
 
