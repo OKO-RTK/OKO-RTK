@@ -18,7 +18,7 @@ import {
 
 export function TabsDemo() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen ">
       <Tabs defaultValue="user" className="w-[400px]">
         {/* Пользователь */}
         <TabsContent value="user">
