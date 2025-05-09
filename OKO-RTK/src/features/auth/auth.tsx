@@ -21,7 +21,7 @@ export function TabsDemo() {
 		<div className='flex items-center justify-center min-h-screen w-full h-full'>
 			<Tabs
 				defaultValue='user'
-				className='w-full'
+				className='w-full h-full'
 			>
 				{/* Пользователь */}
 				<TabsContent value='user'>
@@ -64,7 +64,7 @@ export function TabsDemo() {
 							<Button className='w-full !bg-[#7700FF] w-[405px] h-[68px]'>
 								Войти
 							</Button>
-							<TabsList className='grid w-full grid-cols-1 !bg-transparent'>
+							<TabsList className='grid w-full !bg-transparent'>
 								<TabsTrigger
 									value='inter-password'
 									className='!bg-[#F7F0FF] text-[#7700FF] w-[405px] h-[68px] data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white'
