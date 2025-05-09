@@ -19,10 +19,7 @@ import {
 export function TabsDemo() {
   return (
 		<div className='flex items-center justify-center w-full h-full'>
-			<Tabs
-				defaultValue='user'
-				className='w-full h-full'
-			>
+			<Tabs defaultValue='user' className='w-full h-full'>
 				{/* Пользователь */}
 				<TabsContent value='user' className='w-full h-full'>
 					<Card className='w-full h-full flex flex-col'>
@@ -120,32 +117,42 @@ export function TabsDemo() {
 
 				{/* Вход по коду */}
 				<TabsContent value='inter-password' className='w-full h-full'>
-					<Card className='w-full h-full flex flex-col'>
-						<CardHeader>
-							<CardTitle>Авторизация по коду</CardTitle>
-							<CardDescription>
-								Укажите номер телефона, email или логин, и мы вышлем вам код
-								подтверждения
-							</CardDescription>
-						</CardHeader>
-						<CardContent className='space-y-2'>
-							<Input
-								id='code-login'
-								placeholder='Телефон или почта'
-								className='placeholder:opacity-60'
-							/>
-						</CardContent>
-						<CardFooter className='flex flex-col space-y-2'>
-							<Button className='w-full !bg-[#7700FF]'>Получить код</Button>
-							<TabsList className='grid w-full grid-cols-1 !bg-transparent'>
-								<TabsTrigger
-									value='user'
-									className='!bg-[#F7F0FF] text-[#7700FF] data-[state=active]:bg-[#7700FF] data-[state=active]:text-white'
+					<Card className='w-full h-full flex justify-center items-center bg-red-400'>
+						<div className='bg-blue-400 w-[405px] h-[541px]'>
+							<CardHeader className=''>
+								<CardTitle
+									className='text-[#000000] text-[34px]'
+									style={{ fontFamily: 'RostelecomBasis', fontWeight: 700 }}
 								>
-									Войти с помощью пароля
-								</TabsTrigger>
-							</TabsList>
-						</CardFooter>
+									Авторизация по коду
+								</CardTitle>
+								<CardDescription
+									className='text-[#000000] text-[24px]'
+									style={{ fontFamily: 'RostelecomBasis', fontWeight: 400 }}
+								>
+									Укажите номер телефона, email или логин, и мы вышлем вам код
+									подтверждения
+								</CardDescription>
+							</CardHeader>
+							<CardContent className='space-y-2'>
+								<Input
+									id='code-login'
+									placeholder='Телефон или почта'
+									className='text-[#000000] placeholder:opacity-60'
+								/>
+							</CardContent>
+							<CardFooter className='flex flex-col space-y-2'>
+								<Button className='w-full !bg-[#7700FF]'>Получить код</Button>
+								<TabsList className='grid w-full grid-cols-1 !bg-transparent'>
+									<TabsTrigger
+										value='user'
+										className='!bg-[#F7F0FF] text-[#7700FF] data-[state=active]:bg-[#7700FF] data-[state=active]:text-white'
+									>
+										Войти с помощью пароля
+									</TabsTrigger>
+								</TabsList>
+							</CardFooter>
+						</div>
 					</Card>
 				</TabsContent>
 			</Tabs>
