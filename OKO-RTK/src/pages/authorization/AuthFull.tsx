@@ -1,6 +1,7 @@
 import AuthForm from '../../features/auth/auth'
 import AuthHeader from './AuthHeader'
 import AuthFooter from './AuthFooter'
+import { Image } from '@chakra-ui/react'
 
 function AuthBody() {
   return (
