@@ -1,38 +1,63 @@
+import { Box, Flex, Text, Stack } from '@chakra-ui/react'
 function Footer() {
 	return (
-		<footer className='w-screen bg-[#E8E8EE] px-14 py-6 max-h-[135px]'>
-			<div className='flex flex-col w-full max-md:max-w-full'>
-				<div className='flex gap-2 justify-center items-center self-start'>
-					<span
-						className='font text-[16px] font-medium text-[#9699A3]'
-						style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}
+		<Box
+			as='footer'
+			w='100vw'
+			bg='#E8E8EE'
+			px={{ base: 5, md: 14 }}
+			py={6}
+			maxH='135px'
+		>
+			<Stack w='full'>
+				<Flex gap={2} align='center' justify='flex-start'>
+					<Text
+						fontSize='16px'
+						fontWeight={500}
+						color='#9699A3'
+						fontFamily='RostelecomBasis'
 					>
 						Поддержка
-					</span>
-					<p
-						className='text-[18px] font-[Inter] font-bold text-[#7700FF]'
-						style={{ fontFamily: 'RostelecomBasis', fontWeight: 700 }}
+					</Text>
+					<Text
+						fontSize='18px'
+						fontWeight='bold'
+						color='#7700FF'
+						fontFamily='RostelecomBasis'
 					>
 						8 800 100 0 800
-					</p>
-				</div>
+					</Text>
+				</Flex>
 
-				<div className='flex flex-wrap gap-10 justify-between items-center mt-6 w-full text-[16px] text-[#9699A3] max-md:max-w-full'>
-					<p className='self-stretch my-auto font-medium w-[652px] max-md:max-w-full'
-					style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}>
-						Продолжая пользование сайтом, вы соглашаетесь на обработку файлов Cookies
+				<Flex
+					flexWrap='wrap'
+					justify='space-between'
+					align='center'
+					w='full'
+					color='#9699A3'
+					fontSize='16px'
+				>
+					<Text
+						w={{ base: '100%', md: '652px' }}
+						fontWeight={500}
+						fontFamily='RostelecomBasis'
+					>
+						Продолжая пользование сайтом, вы соглашаетесь на обработку файлов
+						Cookies
 						<br />и других пользовательских данных в соответствии с политикой
-						конфиденциальности{' '}
-					</p>
-					<p
-						className='self-stretch my-auto font-medium w-[183px]'
-						style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}
+						конфиденциальности
+					</Text>
+					<Text
+						w={{ base: '100%', md: '183px' }}
+						fontWeight={500}
+						fontFamily='RostelecomBasis'
+						textAlign={{ base: 'left', md: 'right' }}
 					>
 						2025 ПАО "Ростелеком"
-					</p>
-				</div>
-			</div>
-		</footer>
+					</Text>
+				</Flex>
+			</Stack>
+		</Box>
 	)
 }
 export default Footer

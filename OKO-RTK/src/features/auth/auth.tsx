@@ -1,135 +1,98 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Box, Button, Input, Text, VStack, HStack } from '@chakra-ui/react'
+import { useState } from 'react'
 
-export function TabsDemo() {
-  return (
-    <div className='flex items-center justify-center w-full h-full'>
-      <Tabs
-        defaultValue='user'
-        className='w-full h-full'
-      >
-        {/* Пользователь */}
-        <TabsContent value='user' className='w-full h-full'>
-          <Card className='w-full h-full flex flex-col rounded-2xl p-10 space-y-6'>
-            <CardHeader className="space-y-4">
-              <CardTitle className="text-[34px] text-center" style={{ fontFamily: 'RostelecomBasis', fontWeight: 700 }}>Авторизация по паролю</CardTitle>
-            </CardHeader>
+const CustomTabs = () => {
+	const [activeTab, setActiveTab] = useState<'user' | 'admin'>('user')
 
-            <CardContent className='space-y-7 mb-12' style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}> {/* Увеличено расстояние и добавлен отступ */}
-              {/* Переключатель ВНУТРИ формы */}
-              <TabsList className='grid w-full !bg-transparent grid-cols-2 gap-x-6'>
-              <TabsTrigger
-                value='user'
-                className='data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]'
-                
-              >
-                <div className="text-[18px]">Пользователь</div>
-              </TabsTrigger>
-              <TabsTrigger
-                value='admin'
-                className='data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white !bg-[#F7F0FF] text-[#7700FF]'
-              >
-                <div className="text-[18px]">Админ</div>
-              </TabsTrigger>
-              </TabsList>
+	return (
+		<Box
+			maxH='703px'
+			p={8}
+			spaceY = {6}
+			rounded='2xl'
+			bg='white'
+			boxShadow='md'
+			fontFamily='RostelecomBasis'
+		>
+			<p className='text-black !text-[32px]'>Авторизация по коду</p>
 
-              <Input
-              id='user-login'
-              placeholder='Телефон или почта'
-              className='placeholder:opacity-60 !bg-[#F2F3F4] h-[33%] text-[18px]'
-              />
-              <Input
-              id='user-password'
-              placeholder='Пароль'
-              type='password'
-              className='placeholder:opacity-60 !bg-[#F2F3F4] h-[33%] text-[18px]'
-              />
-            </CardContent>
+			<Text fontSize='md' mb={6} color='gray.700'>
+				Укажите номер телефона, email или логин, и мы вышлем вам код
+				подтверждения
+			</Text>
 
-            <CardFooter className='flex flex-col space-y-9'> {/* Увеличено расстояние */}
-              <Button className='w-full !bg-[#7700FF]  h-[68px] ' 
-                      style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}
-              >
-                <div className="text-[20px]">Войти</div>
-              </Button>
-              <TabsList className='w-full !bg-transparent'>
-                <TabsTrigger
-                  value='inter-password'
-                  className='!bg-[#F7F0FF] text-[#7700FF]  w-full h-[68px] data-[state=active]:!bg-[#7700FF] data-[state=active]:text-white'
-                  style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}
-                >
-                  <div className="text-[20px]">Войти с помощью кода</div>
-                </TabsTrigger>
-              </TabsList>
-            </CardFooter>
-          </Card>
-        </TabsContent>
+			{/* Табы */}
+			<HStack mb={6}>
+				<Button
+					flex={1}
+					bg={activeTab === 'user' ? '#7700FF' : '#F7F0FF'}
+					color={activeTab === 'user' ? 'white' : '#7700FF'}
+					onClick={() => setActiveTab('user')}
+					_hover={{ bg: '#7700FF', color: 'white' }}
+					fontWeight='500'
+					fontSize='18px'
+					h='48px'
+				>
+					Пользователь
+				</Button>
+				<Button
+					flex={1}
+					bg={activeTab === 'admin' ? '#7700FF' : '#F7F0FF'}
+					color={activeTab === 'admin' ? 'white' : '#7700FF'}
+					onClick={() => setActiveTab('admin')}
+					_hover={{ bg: '#7700FF', color: 'white' }}
+					fontWeight='500'
+					fontSize='18px'
+					h='48px'
+				>
+					Админ
+				</Button>
+			</HStack>
 
-				{/* Вход по коду */}
-				<TabsContent value='inter-password' className='w-full h-full'>
-					<Card className='w-full h-full flex justify-center items-center'>
-						<div className='w-[405px] h-[541px] space-y-7 mb-12'>
-							<CardHeader className=''>
-								<CardTitle
-									className='text-[#000000] text-[34px]'
-									style={{ fontFamily: 'RostelecomBasis', fontWeight: 700 }}
-								>
-									Авторизация по коду
-								</CardTitle>
-								<CardDescription
-									className='text-[#000000] text-[24px]'
-									style={{ fontFamily: 'RostelecomBasis', fontWeight: 400 }}
-								>
-									Укажите номер телефона, email или логин, и мы вышлем вам код
-									подтверждения
-								</CardDescription>
-							</CardHeader>
-							<CardContent className='space-y-2'>
-								<Input
-									id='code-login'
-									placeholder='Телефон или почта'
-									className='w-[405px] h-[68px] text-[#000000] placeholder:opacity-60'
-									style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}
-								/>
-							</CardContent>
-							<CardFooter className='flex flex-col space-y-2 '>
-								<Button
-									className='w-[405px] h-[68px] text-[22px] !bg-[#7700FF]'
-									style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}
-								>
-									Получить код
-								</Button>
-								<TabsList className='grid w-full !bg-transparent'>
-									<TabsTrigger
-										value='user'
-										className='w-[405px] h-[68px] !bg-[#F7F0FF] text-[22px] text-[#7700FF] data-[state=active]:bg-[#7700FF] data-[state=active]:text-white'
-										style={{ fontFamily: 'RostelecomBasis', fontWeight: 500 }}
-									>
-										Войти по паролю
-									</TabsTrigger>
-								</TabsList>
-							</CardFooter>
-						</div>
-					</Card>
-				</TabsContent>
-			</Tabs>
-		</div>
+			{/* Контент табов */}
+			{activeTab === 'user' && (
+				<VStack>
+					<Input
+						placeholder='Телефон, почта или логин'
+						bg='#F2F3F4'
+						fontSize='18px'
+						_placeholder={{ opacity: 0.6 }}
+						h='52px'
+					/>
+					<Button bg='#7700FF' color='white' w='full' h='60px' fontSize='20px'>
+						Получить код
+					</Button>
+					<Button
+						variant='ghost'
+						color='#7700FF'
+						bg='#F7F0FF'
+						w='full'
+						h='60px'
+						fontWeight='500'
+						fontSize='20px'
+					>
+						Войти по паролю
+					</Button>
+					<Text fontSize='16px' color='black'>
+						Нет аккаунта?{' '}
+						<Box as='span' color='#7700FF' cursor='pointer'>
+							Зарегистрироваться
+						</Box>
+					</Text>
+				</VStack>
+			)}
+
+			{activeTab === 'admin' && (
+				<VStack>
+					<Input placeholder='Admin login' h='52px' bg='#F2F3F4' />
+					<Input placeholder='Пароль' h='52px' bg='#F2F3F4' type='password' />
+					<Button bg='#7700FF' color='white' w='full' h='60px' fontSize='20px'>
+						Войти
+					</Button>
+				</VStack>
+			)}
+		</Box>
 	)
 }
 
-export default TabsDemo;
+export default CustomTabs
