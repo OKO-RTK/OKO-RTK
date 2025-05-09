@@ -7,7 +7,7 @@ function App() {
 
   return (
 		<>
-			<div className='flex flex-col border-2 border-red-500 w-screen'>
+			<div className='w-screen'>
 				<AuthFull/>
 			</div>
 		</>

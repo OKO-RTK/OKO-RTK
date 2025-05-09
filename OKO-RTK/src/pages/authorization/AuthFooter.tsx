@@ -1,8 +1,8 @@
 function Footer() {
 	return (
-		<footer className='overflow-hidden px-14 pt-6 pb-4 w-full bg-[#E8E8EE] max-md:px-5 max-md:mt-10 max-md:max-w-full'>
+		<footer className='bottom-0 overflow-hidden px-14 pt-6 pb-4 w-full bg-[#E8E8EE] max-md:px-5 max-md:mt-10 max-md:max-w-full'>
 			<div className='flex flex-col w-full max-md:max-w-full'>
-				<div className='flex gap-2 justify-center items-end self-start'>
+				<div className='flex gap-2 justify-center items-center self-start'>
 					<span className='font text-[16px] font-medium text-[#9699A3]'>
 						Поддержка
 					</span>
