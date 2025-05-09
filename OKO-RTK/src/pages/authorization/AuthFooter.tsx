@@ -1,6 +1,6 @@
 function Footer() {
 	return (
-		<footer className='bottom-0 overflow-hidden px-14 pt-6 pb-4 w-full bg-[#E8E8EE] max-md:px-5 max-md:mt-10 max-md:max-w-full'>
+		<footer className='w-screen bg-[#E8E8EE] px-14 py-6 max-h-[135px]'>
 			<div className='flex flex-col w-full max-md:max-w-full'>
 				<div className='flex gap-2 justify-center items-center self-start'>
 					<span className='font text-[16px] font-medium text-[#9699A3]'>
