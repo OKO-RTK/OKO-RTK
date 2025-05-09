@@ -3,6 +3,7 @@ import { useState } from 'react'
 
 const CustomTabs = () => {
 	const [activeTab, setActiveTab] = useState<'user' | 'admin'>('user')
+	const [isPasswordLogin, setIsPasswordLogin] = useState(false)
 
 	return (
 		<Box
@@ -29,7 +30,10 @@ const CustomTabs = () => {
 					flex={1}
 					bg={activeTab === 'user' ? '#7700FF' : '#F7F0FF'}
 					color={activeTab === 'user' ? 'white' : '#7700FF'}
-					onClick={() => setActiveTab('user')}
+					onClick={() => {
+						setActiveTab('user')
+						setIsPasswordLogin(false)
+					}}
 					_hover={{ bg: '#7700FF', color: 'white' }}
 					fontWeight='500'
 					fontSize='18px'
@@ -42,7 +46,10 @@ const CustomTabs = () => {
 					flex={1}
 					bg={activeTab === 'admin' ? '#7700FF' : '#F7F0FF'}
 					color={activeTab === 'admin' ? 'white' : '#7700FF'}
-					onClick={() => setActiveTab('admin')}
+					onClick={() => {
+						setActiveTab('admin')
+						setIsPasswordLogin(false)
+					}}
 					_hover={{ bg: '#7700FF', color: 'white' }}
 					fontWeight='500'
 					fontSize='18px'
@@ -54,7 +61,7 @@ const CustomTabs = () => {
 			</HStack>
 
 			{/* Контент табов */}
-			{activeTab === 'user' && (
+			{!isPasswordLogin && activeTab === 'user' && (
 				<VStack spaceY={4}>
 					<Input
 						placeholder='Телефон, почта или логин'
@@ -76,6 +83,7 @@ const CustomTabs = () => {
 						h='68px'
 						fontWeight='500'
 						fontSize='22px'
+						onClick={() => setIsPasswordLogin(true)}
 					>
 						Войти по паролю
 					</Button>
@@ -91,6 +99,45 @@ const CustomTabs = () => {
 							Зарегистрироваться
 						</Box>
 					</Text>
+				</VStack>
+			)}
+
+			{isPasswordLogin && activeTab === 'user' && (
+				<VStack spaceY={4}>
+					<Input
+						placeholder='Логин или email'
+						borderColor={'transparent'}
+						bg='#F2F3F4'
+						fontSize='22px'
+						_placeholder={{ opacity: 0.6 }}
+						h='68px'
+						borderRadius={10}
+					/>
+					<Input
+						placeholder='Пароль'
+						type='password'
+						borderColor={'transparent'}
+						bg='#F2F3F4'
+						fontSize='22px'
+						_placeholder={{ opacity: 0.6 }}
+						h='68px'
+						borderRadius={10}
+					/>
+					<Button bg='#7700FF' color='white' w='full' h='68px' fontSize={22}>
+						Войти
+					</Button>
+					<Button
+						variant='ghost'
+						color='#7700FF'
+						bg='#F7F0FF'
+						w='full'
+						h='68px'
+						fontWeight='500'
+						fontSize='22px'
+						onClick={() => setIsPasswordLogin(false)}
+					>
+						Назад
+					</Button>
 				</VStack>
 			)}
 
