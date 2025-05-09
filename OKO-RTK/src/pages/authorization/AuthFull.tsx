@@ -9,9 +9,9 @@ function AuthBody() {
 
       <main className="flex flex-1 flex-col md:flex-row">
         <div className="w-full md:w-1/2 flex justify-center items-center p-4">
-          <div className="w-full max-w-[614px] h-[703px] flex justify-center items-center border border-red-500">
-            <AuthForm />
-          </div>
+		  <div className="w-[30%] h-[50%] flex justify-center items-center border border-red-500">
+			<AuthForm />
+		  </div>
         </div>
 
         <div className="w-full md:w-1/2 flex justify-center items-center p-4">
