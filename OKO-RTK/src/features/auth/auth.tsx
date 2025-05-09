@@ -24,8 +24,8 @@ export function TabsDemo() {
 				className='w-full h-full'
 			>
 				{/* Пользователь */}
-				<TabsContent value='user'>
-					<Card>
+				<TabsContent value='user' className='w-full h-full'>
+					<Card className='w-full h-full flex flex-col'>
 						<CardHeader>
 							<CardTitle>Авторизация по паролю</CardTitle>
 						</CardHeader>
@@ -77,8 +77,8 @@ export function TabsDemo() {
 				</TabsContent>
 
 				{/* Админ */}
-				<TabsContent value='admin'>
-					<Card>
+				<TabsContent value='admin' className='w-full h-full'>
+					<Card className='w-full h-full flex flex-col'>
 						<CardHeader>
 							<CardTitle>Смена пароля</CardTitle>
 							<CardDescription>
@@ -119,8 +119,8 @@ export function TabsDemo() {
 				</TabsContent>
 
 				{/* Вход по коду */}
-				<TabsContent value='inter-password'>
-					<Card>
+				<TabsContent value='inter-password' className='w-full h-full'>
+					<Card className='w-full h-full flex flex-col'>
 						<CardHeader>
 							<CardTitle>Авторизация по коду</CardTitle>
 							<CardDescription>
