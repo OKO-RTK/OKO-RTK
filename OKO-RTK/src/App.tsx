@@ -3,6 +3,7 @@ import Sidebar from './components/sidebar/Sidebar'
 import Dashboard from './pages/dashboard/Dashboard'
 import DevicesMap from './pages/map/DevicesMap'
 import Devices from './pages/devices/Devices'
+import Settings from './pages/settings/Settings'
 import './App.css'
 import {
 	BrowserRouter as Router,
@@ -30,6 +31,7 @@ const MainContent: React.FC = () => {
 			<Route path='/' element={<Dashboard />}></Route>
 			<Route path='/devices_map' element={<DevicesMap />}></Route>
 			<Route path='/devices' element={<Devices />}></Route>
+			<Route path='/settings' element={<Settings />}></Route>
 		</Routes>
 	)
 }

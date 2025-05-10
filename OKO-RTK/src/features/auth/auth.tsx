@@ -1,11 +1,10 @@
 import { Box, Button, Input, Text, VStack, HStack } from '@chakra-ui/react'
 import { useState } from 'react'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 
 const CustomTabs = () => {
 	const [activeTab, setActiveTab] = useState<'user' | 'admin'>('user')
-
 
 	const [login, setLogin] = useState('')
 	const [password, setPassword] = useState('')
@@ -13,20 +12,36 @@ const CustomTabs = () => {
 
 	const handleLogin = async () => {
 		setLoading(true)
-		const payload = {login,password};
-		alert(login)
-		console.log("check:", payload);
+
+		const payload = { login, password }
+		console.log('Check payload:', payload)
+
 		try {
-			const endpoint = activeTab === 'user' ? '/api/login/user' : '/api/login/admin'
-			const response = await axios.post(endpoint, { login, password })
-			
+			const endpoint =
+				activeTab === 'user'
+					? 'http://130.193.56.188:3000/login'
+					: 'http://130.193.56.188:3000/login/admin'
+
+			const response = await axios.post(endpoint, payload, {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+
 			console.log('Login success:', response.data)
-			alert('Успешный вход!')
+			alert('Ваш токен: ' + response.data.access_token)
 		} catch (error) {
-			console.error(error)
-			alert('Ошибка входа')
+			const err = error as AxiosError<{ message?: string }>
+		
+			if (err.response) {
+				alert(
+					`Ошибка входа: ${err.response.data?.message || err.response.statusText}`
+				);
+			} else {
+				alert('Ошибка входа: Сервер недоступен или нет ответа');
+			}
 		} finally {
-			setLoading(false)
+			setLoading(false);
 		}
 	}
 

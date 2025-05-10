@@ -143,6 +143,10 @@ button:focus-visible {
   color: white; /* Цвет при наведении */
 }
 
+.icon-button:hover svg {
+  color: white; /* Цвет при наведении */
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
