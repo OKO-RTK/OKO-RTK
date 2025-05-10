@@ -1,8 +1,34 @@
 import { Box, Button, Input, Text, VStack, HStack } from '@chakra-ui/react'
 import { useState } from 'react'
+import axios from 'axios'
+
 
 const CustomTabs = () => {
 	const [activeTab, setActiveTab] = useState<'user' | 'admin'>('user')
+
+
+	const [login, setLogin] = useState('')
+	const [password, setPassword] = useState('')
+	const [loading, setLoading] = useState(false)
+
+	const handleLogin = async () => {
+		setLoading(true)
+		const payload = {login,password};
+		alert(login)
+		console.log("check:", payload);
+		try {
+			const endpoint = activeTab === 'user' ? '/api/login/user' : '/api/login/admin'
+			const response = await axios.post(endpoint, { login, password })
+			
+			console.log('Login success:', response.data)
+			alert('Успешный вход!')
+		} catch (error) {
+			console.error(error)
+			alert('Ошибка входа')
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	return (
 		<Box
@@ -68,9 +94,13 @@ const CustomTabs = () => {
 						outlineWidth={1}
 						borderRadius={10}
 						fontWeight={500}
+						value={login}
+						onChange={e => setLogin(e.target.value)}
 					/>
 					<Input
 						placeholder='Пароль'
+						value={password}
+						onChange={e => setPassword(e.target.value)}
 						type='password'
 						borderColor={'transparent'}
 						bg='#F2F3F4'
@@ -91,6 +121,8 @@ const CustomTabs = () => {
 						borderRadius={10}
 						_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.4)' }}
 						_focus={{ outline: 'none' }}
+						onClick={handleLogin}
+						loading={loading}
 					>
 						Войти
 					</Button>
@@ -146,6 +178,8 @@ const CustomTabs = () => {
 						borderRadius={10}
 						_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.4)' }}
 						_focus={{ outline: 'none' }}
+						onClick={handleLogin}
+						loading={loading}
 					>
 						Войти
 					</Button>

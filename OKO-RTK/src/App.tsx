@@ -26,6 +26,7 @@ const MainContent: React.FC = () => {
 			<AuthFull />
 		</div> */
 		<Routes>
+			<Route path='/auth' element={<AuthFull />}></Route>
 			<Route path='/' element={<Dashboard />}></Route>
 			<Route path='/devices_map' element={<DevicesMap />}></Route>
 			<Route path='/devices' element={<Devices />}></Route>

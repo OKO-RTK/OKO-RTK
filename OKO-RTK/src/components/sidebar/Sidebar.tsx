@@ -7,7 +7,7 @@ import {
 	Separator,
 	IconButton,
 } from '@chakra-ui/react'
-import { FiHome, FiList, FiMap } from 'react-icons/fi'
+import { FiHome, FiList, FiMap, FiLogOut } from 'react-icons/fi'
 import { NavLink } from 'react-router-dom'
 import '../../index.css'
 
@@ -56,6 +56,18 @@ function Sidebar(){
 						<FiList className='!w-[70%] !h-[70%]' />
 					</IconButton>
 				</NavLink>
+
+				<NavLink
+					to='/auth'
+					className={({ isActive }) =>
+						isActive ? 'icon-button active' : 'icon-button'
+					}
+				>
+					<IconButton aria-label='List' p={0} size='lg'>
+						<FiLogOut className='!w-[70%] !h-[70%]' />
+					</IconButton>
+				</NavLink>
+
 			</VStack>
 		</Box>
 	)
