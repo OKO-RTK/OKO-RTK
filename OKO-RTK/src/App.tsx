@@ -1,11 +1,35 @@
 import AuthFull from './pages/authorization/AuthFull'
+import Sidebar from './components/sidebar/Sidebar'
+import Dashboard from './pages/dashboard/Dashboard'
+import DevicesMap from './pages/map/DevicesMap'
+import Devices from './pages/devices/Devices'
 import './App.css'
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	useLocation,
+} from 'react-router-dom'
 
-function App() {
+const App: React.FC = () => {
 	return (
-		<div className='w-screen h-full overflow-x-hidden bg-[#F4F4F5]'>
+		<Router>
+			<MainContent />
+		</Router>
+	)
+}
+const MainContent: React.FC = () => {
+	const location = useLocation()
+
+	return (
+		/* 		<div className='w-screen h-full overflow-x-hidden bg-[#F4F4F5]'>
 			<AuthFull />
-		</div>
+		</div> */
+		<Routes>
+			<Route path='/' element={<Dashboard />}></Route>
+			<Route path='/devices_map' element={<DevicesMap />}></Route>
+			<Route path='/devices' element={<Devices />}></Route>
+		</Routes>
 	)
 }
 

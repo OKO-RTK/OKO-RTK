@@ -112,16 +112,35 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: transparent;
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+/* button:hover {
   border-color: #646cff;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+ */
+
+.icon-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: color 0.3s ease, filter 0.3s ease;
+}
+.icon-button svg{
+  color:#5A606D;
+}
+
+.icon-button.active svg {
+  color: white !important; /* Цвет активной иконки */
+}
+
+.icon-button:hover svg {
+  color: white; /* Цвет при наведении */
 }
 
 @media (prefers-color-scheme: light) {
