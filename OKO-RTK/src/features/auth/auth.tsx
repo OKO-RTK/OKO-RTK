@@ -54,6 +54,8 @@ const CustomTabs = () => {
 			className='h-[99%] shadow-[0_0px_15px_rgba(0,0,0,0.1)]'
 			p={8}
 			spaceY={6}
+			w='full'
+			h='full'
 			rounded='15'
 			bg='white'
 			fontFamily='RostelecomBasis'
