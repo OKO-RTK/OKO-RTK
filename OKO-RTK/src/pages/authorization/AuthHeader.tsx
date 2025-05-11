@@ -14,7 +14,7 @@ function Header() {
 			<Flex align='center' gap={4} h='full'>
 				<Flex align='center' gap={2.5}>
 					<Image
-						src='https://cdn.builder.io/api/v1/image/assets/TEMP/08ed317819c35661963ce24058ecb33e23bfad6b?placeholderIfAbsent=true&apiKey=f7374e46ea904925bc6fe48a550f93bc'
+						src='/rtk_logo.png'
 						alt='ОКО Ростелеком logo'
 						boxSize='56px'
 						objectFit='contain'
