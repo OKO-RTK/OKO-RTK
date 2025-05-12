@@ -1,5 +1,17 @@
 import Sidebar from '../../components/sidebar/Sidebar'
-import { Flex, Box, Text, HStack, SegmentGroup, Button, CloseButton, Dialog, Portal } from '@chakra-ui/react'
+import {
+	Flex,
+	Box,
+	Text,
+	HStack,
+	SegmentGroup,
+	Button,
+	CloseButton,
+	Dialog,
+	Portal,
+	Input,
+	NativeSelect,
+} from '@chakra-ui/react'
 import { FiUpload} from 'react-icons/fi'
 import '../../index.css'
 function Dashboard() {
@@ -21,7 +33,7 @@ function Dashboard() {
 					className='shadow-[0_4px_4px_rgba(0,0,0,0.1)]'
 				>
 					<HStack justifyContent={'space-between'} alignItems='center' h='100%'>
-						<Box bg='red' display='flex' alignItems='center' h='100%'>
+						<Box display='flex' alignItems='center' h='100%'>
 							<Text
 								color={'black'}
 								fontWeight={700}
@@ -32,44 +44,137 @@ function Dashboard() {
 						</Box>
 
 						<HStack h='100%'>
-							<SegmentGroup.Root defaultValue='React'>
-								<SegmentGroup.Indicator />
-								<SegmentGroup.Items items={['Общий', 'Детальный']} />
-							</SegmentGroup.Root>
+							{/* <SegmentGroup.Root defaultValue='Общий'>
+								<SegmentGroup.Indicator
+									style={{
+										background: '#7700FF',
+										borderRadius: '9999px',
+										transition: 'all 0.2s ease-in-out',
+									}}
+								/>
+								<SegmentGroup.Items
+									items={['Общий', 'Детальный']}
+									renderItem={(item, props) => (
+										<Box
+											px={4}
+											py={2}
+											cursor='pointer'
+											fontWeight={500}
+											borderRadius='9999px'
+											zIndex={1}
+											color={props.isSelected ? 'white' : '#7700FF'}
+											transition='color 0.2s ease'
+											{...props}
+										>
+											{item}
+										</Box>
+									)}
+									style={{
+										display: 'flex',
+										background: '#fff',
+										borderRadius: '9999px',
+										padding: '2px',
+										border: '1px solid #ccc',
+										position: 'relative',
+									}}
+								/>
+							</SegmentGroup.Root> */}
 							<Dialog.Root>
 								<Dialog.Trigger asChild>
 									<Box
 										display='flex'
 										alignItems='center'
 										justifyContent='center'
-										h='80%'
-										boxShadow="0 4px 10px rgba(119, 0, 255, 0.5)"
-										borderRadius={10}
+										h='57.253%'
 										aspectRatio={1}
-										_hover={{ bg: '#7700FF' }}
+										borderRadius='10px'
+										outline='1px solid #CCCCCC'
+										boxShadow='0 0 15px rgba(119, 0, 255, 0.3)'
+										color='#7700FF'
+										_hover={{
+											bg: '#7700FF',
+											color: 'white', // Это изменит цвет иконки
+										}}
+										transition='all 0.2s ease-in-out'
 									>
-										<FiUpload className='h-[50%] w-[50%] stroke-[1.5]' />
+										<FiUpload className='h-[70%] w-[70%] stroke-[1.5]' />
 									</Box>
 								</Dialog.Trigger>
 								<Portal>
 									<Dialog.Backdrop />
 									<Dialog.Positioner>
-										<Dialog.Content>
+										<Dialog.Content
+											borderRadius={'15px'}
+											bg='#EFEFF0'
+											fontFamily={'RostelecomBasis'}
+											className='text-black'
+										>
 											<Dialog.Header>
-												<Dialog.Title>Dialog Title</Dialog.Title>
+												<Dialog.Title fontSize='30px'>
+													Экспорт отчета
+												</Dialog.Title>
 											</Dialog.Header>
-											<Dialog.Body>
-												<p>
-													Lorem ipsum dolor sit amet, consectetur adipiscing
-													elit. Sed do eiusmod tempor incididunt ut labore et
-													dolore magna aliqua.
-												</p>
+
+											<Dialog.Body spaceY={2}>
+												<Box
+													bg='white'
+													p={'10px'}
+													borderRadius={10}
+													boxShadow='0 0 15px rgba(0, 0, 0, 0.1)'
+												>
+													<Text fontWeight={500} fontSize={20} mb={2}>
+														Сохранить как
+													</Text>
+													<Input
+														placeholder={'Придумайте имя отчета'}
+														borderColor={'transparent'}
+														bg='#F2F3F4'
+														color='black'
+														fontSize='16px'
+														_placeholder={{ opacity: 0.6 }}
+														h='40px'
+														outlineWidth={1}
+														borderRadius={10}
+														fontWeight={500}
+													/>
+												</Box>
+												<Box
+													bg='white'
+													p={'10px'}
+													borderRadius={10}
+													boxShadow='0 0 15px rgba(0, 0, 0, 0.1)'
+												>
+													<Text fontWeight={500} fontSize={20} mb={2}>
+														Тип
+													</Text>
+													<NativeSelect.Root>
+														<NativeSelect.Field
+															bg='#F2F3F4'
+															color='black'
+															fontSize='16px'
+															borderRadius={10}
+															borderColor={'transparent'}
+															fontWeight={500}
+														>
+															<option value='1' className='!bg-[#F2F3F4]'>
+																CSV-файл
+															</option>
+															<option value='2' className='!bg-[#F2F3F4]'>
+																JSON-файл
+															</option>
+														</NativeSelect.Field>
+														<NativeSelect.Indicator />
+													</NativeSelect.Root>
+												</Box>
 											</Dialog.Body>
+
 											<Dialog.Footer>
 												<Dialog.ActionTrigger asChild>
-													<Button variant='outline'>Cancel</Button>
+													<Button variant='outline' color={'black'}>
+														Cancel
+													</Button>
 												</Dialog.ActionTrigger>
-												<Button>Save</Button>
+												<Button color={'black'}>Save</Button>
 											</Dialog.Footer>
 											<Dialog.CloseTrigger asChild>
 												<CloseButton size='sm' />

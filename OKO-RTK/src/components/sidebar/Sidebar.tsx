@@ -39,8 +39,9 @@ function Sidebar(){
 						w='100%'
 						aspectRatio={1}
 						_hover={{ bg: 'rgba(90, 96, 109, 0.2)' }}
+						transition='all 0.2s ease-in-out'
 					>
-						<FiHome className='w-[50%] h-[50%] stroke-[1.5]' />
+						<FiHome className='w-[50%] h-[50%] stroke-[1.5] transition-colors duration-200 ease-in-out' />
 					</Box>
 				</NavLink>
 
@@ -58,8 +59,9 @@ function Sidebar(){
 						w='100%'
 						aspectRatio={1}
 						_hover={{ bg: 'rgba(90, 96, 109, 0.2)' }}
+						transition='all 0.2s ease-in-out'
 					>
-						<FiMap className='w-[40%] h-[40%] stroke-[1.5]' />
+						<FiMap className='w-[40%] h-[40%] stroke-[1.5] transition-colors duration-200 ease-in-out' />
 					</Box>
 				</NavLink>
 
@@ -77,8 +79,9 @@ function Sidebar(){
 						w='100%'
 						aspectRatio={1}
 						_hover={{ bg: 'rgba(90, 96, 109, 0.2)' }}
+						transition='all 0.2s ease-in-out'
 					>
-						<FiList className='w-[50%] h-[50%] stroke-[1.5]' />
+						<FiList className='w-[50%] h-[50%] stroke-[1.5] transition-colors duration-200 ease-in-out' />
 					</Box>
 				</NavLink>
 			</VStack>
@@ -98,8 +101,9 @@ function Sidebar(){
 						w='100%'
 						aspectRatio={1}
 						_hover={{ bg: 'rgba(90, 96, 109, 0.2)' }}
+						transition='all 0.2s ease-in-out'
 					>
-						<FiSettings className='w-[50%] h-[50%] stroke-[1.5]' />
+						<FiSettings className='w-[50%] h-[50%] stroke-[1.5] transition-colors duration-200 ease-in-out' />
 					</Box>
 				</NavLink>
 				<NavLink
@@ -114,10 +118,12 @@ function Sidebar(){
 						alignItems='center'
 						justifyContent='center'
 						w='100%'
+						color='#5A606D'
 						aspectRatio={1}
-						_hover={{ bg: 'rgba(90, 96, 109, 0.2)' }}
+						_hover={{ color: 'white', bg: 'rgba(90, 96, 109, 0.2)' }}
+						transition='all 0.2s ease-in-out'
 					>
-						<FiLogOut className='w-[50%] h-[50%] stroke-[1.5]' />
+						<FiLogOut className='w-[50%] h-[50%] stroke-[1.5] transition-colors duration-200 ease-in-out' />
 					</Box>
 				</NavLink>
 			</VStack>

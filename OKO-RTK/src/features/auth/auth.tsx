@@ -1,14 +1,17 @@
 import { Box, Button, Input, Text, VStack, HStack } from '@chakra-ui/react'
 import { useState } from 'react'
 import axios, { AxiosError } from 'axios'
-
+import {useNavigate} from 'react-router-dom'
 const CustomTabs = () => {
 	const [activeTab, setActiveTab] = useState<'user' | 'admin'>('user')
 	const [isRegistering, setIsRegistering] = useState(false)
 
 	const [login, setLogin] = useState('')
 	const [password, setPassword] = useState('')
+	const [confirmPassword, setConfirmPassword] = useState('')
 	const [loading, setLoading] = useState(false)
+
+	const navigate = useNavigate()
 
 	const handleLogin = async () => {
 		setLoading(true)
@@ -30,23 +33,67 @@ const CustomTabs = () => {
 
 			console.log('Login success:', response.data)
 			alert('Ваш токен: ' + response.data.access_token)
+			localStorage.setItem('token', response.data.access_token)
+			navigate('/')
 		} catch (error) {
 			const err = error as AxiosError<{ message?: string }>
-		
+
 			if (err.response) {
 				alert(
-					`Ошибка входа: ${err.response.data?.message || err.response.statusText}`
-				);
+					`Ошибка входа: ${
+						err.response.data?.message || err.response.statusText
+					}`
+				)
 			} else {
-				alert('Ошибка входа: Сервер недоступен или нет ответа');
+				alert('Ошибка входа: Сервер недоступен или нет ответа')
 			}
 		} finally {
-			setLoading(false);
+			setLoading(false)
 		}
 	}
 
-	const handleRegister = () => {
-		alert('Регистрация завершена!')
+	const handleRegister = async () => {
+		setLoading(true)
+
+		if (password !== confirmPassword) {
+			alert('Пароли не совпадают')
+			setLoading(false)
+			return
+		}
+
+		const payload = { login, password }
+		console.log('Register payload:', payload)
+
+		try {
+			const endpoint =
+				activeTab === 'user'
+					? 'http://130.193.56.188:3000/register'
+					: 'http://130.193.56.188:3000/register/admin'
+
+			const response = await axios.post(endpoint, payload, {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			})
+
+			alert('Регистрация прошла успешно! Теперь вы можете войти.')
+			console.log('Register success:', response.data)
+			setIsRegistering(false)
+		} catch (error) {
+			const err = error as AxiosError<{ message?: string }>
+
+			if (err.response) {
+				alert(
+					`Ошибка регистрации: ${
+						err.response.data?.message || err.response.statusText
+					}`
+				)
+			} else {
+				alert('Ошибка регистрации: Сервер недоступен или нет ответа')
+			}
+		} finally {
+			setLoading(false)
+		}
 	}
 
 	return (
@@ -84,6 +131,7 @@ const CustomTabs = () => {
 						h='48px'
 						borderRadius={10}
 						_focus={{ outline: 'none' }}
+						transition='all 0.2s ease-in-out'
 					>
 						Пользователь
 					</Button>
@@ -98,6 +146,7 @@ const CustomTabs = () => {
 						h='48px'
 						borderRadius={10}
 						_focus={{ outline: 'none' }}
+						transition='all 0.2s ease-in-out'
 					>
 						Админ
 					</Button>
@@ -106,7 +155,9 @@ const CustomTabs = () => {
 
 			<VStack spaceY={4}>
 				<Input
-					placeholder={isRegistering ? 'Введите логин' : 'Телефон, почта или логин'}
+					placeholder={
+						isRegistering ? 'Введите логин' : 'Телефон, почта или логин'
+					}
 					borderColor={'transparent'}
 					bg='#F2F3F4'
 					color='black'
@@ -138,6 +189,8 @@ const CustomTabs = () => {
 					<Input
 						placeholder='Подтвердите пароль'
 						type='password'
+						value={confirmPassword}
+						onChange={e => setConfirmPassword(e.target.value)}
 						borderColor={'transparent'}
 						bg='#F2F3F4'
 						color='black'
@@ -160,6 +213,7 @@ const CustomTabs = () => {
 					_focus={{ outline: 'none' }}
 					onClick={isRegistering ? handleRegister : handleLogin}
 					loading={loading}
+					transition='all 0.2s ease-in-out'
 				>
 					{isRegistering ? 'Зарегистрироваться' : 'Войти'}
 				</Button>
@@ -198,4 +252,5 @@ const CustomTabs = () => {
 		</Box>
 	)
 }
+
 export default CustomTabs
