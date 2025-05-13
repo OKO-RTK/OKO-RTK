@@ -1,4 +1,5 @@
 import Sidebar from '../../components/sidebar/Sidebar'
+import Notifications from '../../features/notifications/Notifications'
 import {
 	Flex,
 	Box,
@@ -8,12 +9,94 @@ import {
 	VStack,
 	Input,
 	NativeSelect,
-  Switch,
-  Button
+	Switch,
+	Button,
 } from '@chakra-ui/react'
-import { FiCheck, FiX, FiLogOut} from 'react-icons/fi'
+import { FiCheck, FiX, FiLogOut } from 'react-icons/fi'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+
+type User = {
+	username: string
+	email: string
+	email_report: string
+	phone: string
+	role: string
+}
 
 function Settings() {
+  
+	
+  const [settingsData, setSettingsData] = useState<any>(null)
+	const [loading, setLoading] = useState(true)
+	const [error, setError] = useState<string | null>(null)
+
+	const [initialData, setInitialData] = useState<User | null>(null)
+
+
+	const [data, setData] = useState<User>({
+		username: '',
+		email: '',
+		email_report: '',
+		phone: '',
+		role: '',
+	})
+
+
+
+	const handleSave = async () => {
+		try {
+			const token = localStorage.getItem('token')
+			const response = await axios.put(
+				'http://130.193.56.188:3000/user/edit',
+				{ username: data.username, email: data.email, email_report: data.email_report, phone: data.phone, role: data.role },
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json',
+					},
+				}
+			)
+			setInitialData(data)
+			if (response.data.access_token) 
+				localStorage.setItem('token', response.data.access_token);
+			alert('Данные успешно обновлены')
+		} catch (error) {
+			alert("Ошибка при сохранении данных " + error)
+		}
+	}
+		
+	useEffect(() => {
+
+		const token = localStorage.getItem('token')
+		const fetchSettings = async () => {
+
+			try {
+				const response = await axios.get('http://130.193.56.188:3000/user',{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+			})
+				setData(response.data)
+				setInitialData(response.data)
+			} catch (err) {
+				setError('Ошибка при получении данных настроек')
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		fetchSettings()
+	}, [])
+
+	const handleReset = () => {
+		if (initialData) setData(initialData)
+	}
+
+/* 
+	if (loading) return <p>Загрузка...</p>
+	if (error) return <p>{error}</p>
+   */
   return (
 		<Flex h='100vh' w='100vw' overflow='hidden' fontFamily='RostelecomBasis'>
 			{/* Sidebar (фиксированной ширины) */}
@@ -78,6 +161,8 @@ function Settings() {
 										outlineWidth={1}
 										borderRadius={10}
 										fontWeight={500}
+										value={data.username}
+										onChange={e => setData({ ...data, email: e.target.value })}
 									/>
 								</Box>
 								<Box w='full'>
@@ -104,6 +189,10 @@ function Settings() {
 											borderRadius={10}
 											fontWeight={500}
 											flex={1}
+											value={data.email}
+											onChange={e =>
+												setData({ ...data, email: e.target.value })
+											}
 										/>
 
 										<Button
@@ -120,6 +209,7 @@ function Settings() {
 											}}
 											_focus={{ outline: 'none' }}
 											whiteSpace='nowrap'
+											transition='all 0.2s ease-in-out'
 										>
 											Сменить почту
 										</Button>
@@ -144,6 +234,10 @@ function Settings() {
 										outlineWidth={1}
 										borderRadius={10}
 										fontWeight={500}
+										value={data.email_report}
+										onChange={e =>
+											setData({ ...data, email_report: e.target.value })
+										}
 									/>
 								</Box>
 								<Box w='100%'>
@@ -164,6 +258,8 @@ function Settings() {
 										outlineWidth={1}
 										borderRadius={10}
 										fontWeight={500}
+										value={data.phone}
+										onChange={e => setData({ ...data, phone: e.target.value })}
 									/>
 								</Box>
 								<Box w='100%'>
@@ -178,6 +274,10 @@ function Settings() {
 											borderRadius={10}
 											borderColor={'transparent'}
 											fontWeight={500}
+											value={data.role}
+											onChange={e =>
+												setData(prev => ({ ...prev, role: e.target.value }))
+											}
 										>
 											<option value='user' className='!bg-[#F2F3F4]'>
 												Пользователь
@@ -195,16 +295,14 @@ function Settings() {
 										<Switch.Control
 											bg='gray.200'
 											_checked={{
-												bg: '#7700FF', // Фиолетовый при включении
+												bg: '#7700FF',
 											}}
 											_focus={{
 												boxShadow: 'outline',
 											}}
 											transition='all 0.2s ease-in-out'
 										>
-											<Switch.Thumb
-												bg='white' // Белый кружок
-											/>
+											<Switch.Thumb bg='white' />
 										</Switch.Control>
 										<Switch.Label
 											color='black'
@@ -245,6 +343,7 @@ function Settings() {
 										_hover={{ boxShadow: '0 0px 15px rgba(90, 96, 109, 0.3)' }}
 										_focus={{ outline: 'none' }}
 										transition='all 0.2s ease-in-out'
+										onClick={handleReset}
 									>
 										<FiX />
 										Отменить изменения
@@ -262,6 +361,7 @@ function Settings() {
 										_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)' }}
 										_focus={{ outline: 'none' }}
 										transition='all 0.2s ease-in-out'
+										onClick={handleSave}
 									>
 										<FiCheck />
 										Сохранить изменения
@@ -273,14 +373,10 @@ function Settings() {
 						<GridItem
 							bg='white'
 							borderRadius='15px'
-							boxShadow='0 0 15px rgba(0, 0, 0, 0.1)'colSpan={2}>
-							<VStack align='flex-start' mx='2.54%' mb='2.54%' spaceY={2}>
-								<Box w='100%' mb='-3'>
-									<Text fontSize='36px' fontWeight='700' color='black'>
-										Уведомления
-									</Text>
-								</Box>
-							</VStack>
+							boxShadow='0 0 15px rgba(0, 0, 0, 0.1)'
+							colSpan={2}
+						>
+							<Notifications />
 						</GridItem>
 					</SimpleGrid>
 				</Box>

@@ -15,7 +15,8 @@ const CustomTabs = () => {
 
 	const handleLogin = async () => {
 		setLoading(true)
-
+		
+		const token = localStorage.getItem('token')
 		const payload = { login, password }
 		console.log('Check payload:', payload)
 
