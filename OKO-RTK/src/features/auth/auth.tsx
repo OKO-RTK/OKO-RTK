@@ -124,7 +124,12 @@ const CustomTabs = () => {
 						flex={1}
 						bg={activeTab === 'user' ? '#7700FF' : '#F7F0FF'}
 						color={activeTab === 'user' ? 'white' : '#7700FF'}
-						onClick={() => setActiveTab('user')}
+						onClick={() => {
+							setActiveTab('user') 
+							setLogin('')
+	                        setPassword('')
+	                        setConfirmPassword('')
+						}}
 						_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)' }}
 						fontWeight='500'
 						fontSize='22px'
@@ -139,7 +144,12 @@ const CustomTabs = () => {
 						flex={1}
 						bg={activeTab === 'admin' ? '#7700FF' : '#F7F0FF'}
 						color={activeTab === 'admin' ? 'white' : '#7700FF'}
-						onClick={() => setActiveTab('admin')}
+						onClick={() => {
+							setActiveTab('admin') 
+							setLogin('')
+	                        setPassword('')
+	                        setConfirmPassword('')
+						}}
 						_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)' }}
 						fontWeight='500'
 						fontSize='22px'
