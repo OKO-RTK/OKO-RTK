@@ -16,10 +16,12 @@ import { FiCheck, FiX, FiLogOut } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
+import { NavLink } from 'react-router-dom'
+
 type User = {
 	username: string
 	email: string
-	email_report: string
+	email_report: string	
 	phone: string
 	role: string
 }
@@ -89,10 +91,13 @@ function Settings() {
 		fetchSettings()
 	}, [])
 
-	const handleReset = () => {
+	const handleReset = async () => {
 		if (initialData) setData(initialData)
 	}
 
+	const handleExit = async () => {
+		localStorage.removeItem('token')
+	}
 /* 
 	if (loading) return <p>Загрузка...</p>
 	if (error) return <p>{error}</p>
@@ -162,7 +167,9 @@ function Settings() {
 										borderRadius={10}
 										fontWeight={500}
 										value={data.username}
-										onChange={e => setData({ ...data, email: e.target.value })}
+										onChange={e =>
+											setData({ ...data, username: e.target.value })
+										}
 									/>
 								</Box>
 								<Box w='full'>
@@ -314,23 +321,27 @@ function Settings() {
 									</Switch.Root>
 								</Box>
 								<SimpleGrid templateColumns='repeat(3, 2fr)' gap='4' w='full'>
-									<Button
-										bg='transparent'
-										color='#FF4F12'
-										borderColor='#FF4F12'
-										borderWidth='2px'
-										h='40px'
-										fontSize='18px'
-										fontWeight='500'
-										borderRadius={10}
-										_hover={{ boxShadow: '0 0px 15px rgba(255, 79, 18, 0.3)' }}
-										_focus={{ outline: 'none' }}
-										transition='all 0.2s ease-in-out'
-									>
-										<FiLogOut />
-										Выйти
-									</Button>
-
+									<NavLink to='/auth'>
+										<Button
+											bg='transparent'
+											color='#FF4F12'
+											borderColor='#FF4F12'
+											borderWidth='2px'
+											h='40px'
+											fontSize='18px'
+											fontWeight='500'
+											borderRadius={10}
+											_hover={{
+												boxShadow: '0 0px 15px rgba(255, 79, 18, 0.3)',
+											}}
+											_focus={{ outline: 'none' }}
+											transition='all 0.2s ease-in-out'
+											onClick={handleExit}
+										>
+											<FiLogOut />
+											Выйти
+										</Button>
+									</NavLink>
 									<Button
 										bg='transparent'
 										color='#5A606D'
