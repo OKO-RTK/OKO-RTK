@@ -44,41 +44,6 @@ function Dashboard() {
 						</Box>
 
 						<HStack h='100%'>
-							{/* <SegmentGroup.Root defaultValue='Общий'>
-								<SegmentGroup.Indicator
-									style={{
-										background: '#7700FF',
-										borderRadius: '9999px',
-										transition: 'all 0.2s ease-in-out',
-									}}
-								/>
-								<SegmentGroup.Items
-									items={['Общий', 'Детальный']}
-									renderItem={(item, props) => (
-										<Box
-											px={4}
-											py={2}
-											cursor='pointer'
-											fontWeight={500}
-											borderRadius='9999px'
-											zIndex={1}
-											color={props.isSelected ? 'white' : '#7700FF'}
-											transition='color 0.2s ease'
-											{...props}
-										>
-											{item}
-										</Box>
-									)}
-									style={{
-										display: 'flex',
-										background: '#fff',
-										borderRadius: '9999px',
-										padding: '2px',
-										border: '1px solid #ccc',
-										position: 'relative',
-									}}
-								/>
-							</SegmentGroup.Root> */}
 							<Dialog.Root>
 								<Dialog.Trigger asChild>
 									<Box
