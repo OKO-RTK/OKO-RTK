@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 
 
-interface Device {
+interface Device {				//информация об устройстве
 	device_name: string
 	ip_address: string
 	device_type: string
@@ -32,6 +32,75 @@ function Devices() {
 
 	const [devices, setDevices] = useState<Device[]>([])
 	const token = localStorage.getItem('token')
+
+	const [selectedMethods, setSelectedMethods] = useState<string[]>([])
+
+	const fetchDevices = async () => {
+		const token = localStorage.getItem('token')
+		try {
+			const response = await axios.get<{ devices: Device[] }>(
+				'http://130.193.56.188:3000/device',
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json',
+					},
+				}
+			)
+			const devicesArr = response.data.devices
+			if (Array.isArray(devicesArr)) {
+				setDevices(devicesArr.slice(0, 50))
+			} else alert('Ошибка при формировании массива устройств')
+		} catch (err) {
+			alert('Ошибка при загрузке уведомлений ' + err)
+		}
+	}
+
+	const [deviceData, setDeviceData] = useState({
+		device_name: '',
+		ip_address: '',
+		serial_number: '',
+		device_type: '',
+		device_group: '',
+		monitoring_interval: '',
+		type_check: '',
+	})
+
+	useEffect(() => {
+		if (location.pathname === '/devices') {
+			fetchDevices()
+		}
+	}, [])
+
+	const handleCreateDevice = async () => {
+		try{
+			const token = localStorage.getItem('token');
+			await axios.post(
+				'http://130.193.56.188:3000/device/add',
+				{
+					device_name: deviceData.device_name,
+					ip_address: deviceData.ip_address,
+					serial_number: deviceData.serial_number,
+					device_type: deviceData.device_type,
+					device_group: deviceData.device_group,
+					monitoring_interval: parseInt(deviceData.monitoring_interval),
+					type_check: deviceData.device_name,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-type': 'application/json',
+					},
+				}
+			)
+		alert('Тип устройства - ' + deviceData.device_type)
+		alert('Группа - ' + deviceData.device_group)
+		fetchDevices()
+	}
+		catch (err){
+			alert ('Ошибка при добавлении устройства ' + err)
+		}
+	}
 
 
 	const getColorByStatus = (status:string):string=>{			//функция для задания цвета границы в зависимости от статуса устройства
@@ -69,38 +138,11 @@ function Devices() {
 
 
 	const items = [																			//массив для реализации выбора метода мониторинга
-		{ value: 'next', title: 'Ping' },
-		{ value: 'vite', title: 'SNMP' },
-		{ value: 'astro', title: 'Проверка порта' },
+		{ value: 'ping', title: 'Ping' },
+		{ value: 'snmp', title: 'SNMP' },
+		{ value: 'check-port', title: 'Проверка порта' },
 	]
 
-	useEffect(() => {
-		if (location.pathname === '/devices') {
-			const fetchDevices = async () => {
-				const token = localStorage.getItem('token')
-				try {
-					const response = await axios.get<{devices: Device[]}>(
-						'http://130.193.56.188:3000/device',
-						{
-							headers: {
-								Authorization: `Bearer ${token}`,
-								'Content-Type': 'application/json',
-							},
-						}
-					)
-					const devicesArr = response.data.devices;
-					if (Array.isArray(devicesArr)){
-						setDevices(devicesArr.slice(0, 50))
-					}
-					else alert('Ошибка при формировании массива устройств')
-					
-				} catch (err) {
-					alert('Ошибка при загрузке уведомлений ' + err)
-				}
-			}
-			fetchDevices()
-		}
-	}, [])
 
 	return (
 		<Flex h='100vh' w='100vw' overflow='hidden' fontFamily='RostelecomBasis'>
@@ -205,6 +247,12 @@ function Devices() {
 														outlineWidth={1}
 														borderRadius={10}
 														fontWeight={500}
+														onChange={e =>
+															setDeviceData({
+																...deviceData,
+																device_name: e.target.value,
+															})
+														}
 													/>
 												</Box>
 
@@ -230,6 +278,12 @@ function Devices() {
 														outlineWidth={1}
 														borderRadius={10}
 														fontWeight={500}
+														onChange={e =>
+															setDeviceData({
+																...deviceData,
+																ip_address: e.target.value,
+															})
+														}
 													/>
 												</Box>
 
@@ -253,6 +307,12 @@ function Devices() {
 														outlineWidth={1}
 														borderRadius={10}
 														fontWeight={500}
+														onChange={e =>
+															setDeviceData({
+																...deviceData,
+																serial_number: e.target.value,
+															})
+														}
 													/>
 												</Box>
 
@@ -273,6 +333,13 @@ function Devices() {
 															borderRadius={10}
 															borderColor={'transparent'}
 															fontWeight={500}
+															value={deviceData.device_type}
+															onChange={e =>
+																setDeviceData(prev => ({
+																	...prev,
+																	device_type: e.target.value,
+																}))
+															}
 														>
 															<option value='server' className='!bg-[#F2F3F4]'>
 																Сервер
@@ -332,6 +399,13 @@ function Devices() {
 															borderRadius={10}
 															borderColor={'transparent'}
 															fontWeight={500}
+															value={deviceData.device_group}
+															onChange={e =>
+																setDeviceData(prev => ({
+																	...prev,
+																	device_group: e.target.value,
+																}))
+															}
 														>
 															<option value='group1' className='!bg-[#F2F3F4]'>
 																Группа 1
@@ -355,7 +429,7 @@ function Devices() {
 													</Text>
 													<Input
 														placeholder={
-															'Интервал проверки, например 12.04.25 - 13.05.25'
+															'Целое число, интервал проверки в минутах'
 														}
 														borderColor={'transparent'}
 														bg='#F2F3F4'
@@ -366,6 +440,12 @@ function Devices() {
 														outlineWidth={1}
 														borderRadius={10}
 														fontWeight={500}
+														onChange={e =>
+															setDeviceData({
+																...deviceData,
+																monitoring_interval: e.target.value,
+															})
+														}
 													/>
 												</Box>
 
@@ -378,7 +458,10 @@ function Devices() {
 													<Text fontWeight={500} fontSize={20} mb={2}>
 														Выберите методы мониторинга
 													</Text>
-													<CheckboxGroup defaultValue={['next']}>
+													<CheckboxGroup
+														defaultValue={['ping']}
+														/* onChange={setSelectedMethods} */
+													>
 														<Flex gap='2'>
 															{items.map(item => (
 																<CheckboxCard.Root
@@ -406,7 +489,6 @@ function Devices() {
 																				{item.title}
 																			</CheckboxCard.Label>
 																		</CheckboxCard.Content>
-																		{/* <CheckboxCard.Indicator /> */}
 																	</CheckboxCard.Control>
 																</CheckboxCard.Root>
 															))}
@@ -416,26 +498,29 @@ function Devices() {
 											</Dialog.Body>
 
 											<Dialog.Footer>
-												<Button
-													bg='white'
-													color='#7700FF'
-													borderColor='#7700FF'
-													borderWidth='2px'
-													h='40px'
-													w='full'
-													fontSize='18px'
-													fontWeight='500'
-													borderRadius={10}
-													_hover={{
-														boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)',
-													}}
-													_focus={{ outline: 'none' }}
-													transition='all 0.2s ease-in-out'
-													/* onClick={handleSave} */
-												>
-													<FiCheck />
-													Сохранить изменения
-												</Button>
+												{/* тут небольшой костыль - из-за Dialog.CloseTrigger модальное окно закрывается сразу по нажатии кнопки, а не ждет ответа функции handleCreateDevice */}
+												<Dialog.ActionTrigger asChild>
+													<Button
+														bg='white'
+														color='#7700FF'
+														borderColor='#7700FF'
+														borderWidth='2px'
+														h='40px'
+														w='full'
+														fontSize='18px'
+														fontWeight='500'
+														borderRadius={10}
+														_hover={{
+															boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)',
+														}}
+														_focus={{ outline: 'none' }}
+														transition='all 0.2s ease-in-out'
+														onClick={handleCreateDevice}
+													>
+														<FiCheck />
+														Подтвердить создание нового устройства
+													</Button>
+												</Dialog.ActionTrigger>
 											</Dialog.Footer>
 											<Dialog.CloseTrigger asChild>
 												<CloseButton
