@@ -2,7 +2,6 @@ import AuthFull from './pages/authorization/AuthFull'
 import Sidebar from './components/sidebar/Sidebar'
 import Dashboard from './pages/dashboard/Dashboard'
 import DevicesMap from './pages/map/DevicesMap'
-import Devices from './pages/devices/Devices'
 import Settings from './pages/settings/Settings'
 import './App.css'
 import {
@@ -11,6 +10,7 @@ import {
 	Route,
 	useLocation,
 } from 'react-router-dom'
+import DevicesAndGroups from './pages/devices/DevicesAndGroups'
 
 const App: React.FC = () => {
 	return (
@@ -30,7 +30,7 @@ const MainContent: React.FC = () => {
 			<Route path='/auth' element={<AuthFull />}></Route>
 			<Route path='/' element={<Dashboard />}></Route>
 			<Route path='/devices_map' element={<DevicesMap />}></Route>
-			<Route path='/devices' element={<Devices />}></Route>
+			<Route path='/devices' element={<DevicesAndGroups />}></Route>
 			<Route path='/settings' element={<Settings />}></Route>
 		</Routes>
 	)

@@ -29,7 +29,7 @@ type User = {
 function Settings() {
   
 	
-  const [settingsData, setSettingsData] = useState<any>(null)
+/*   const [settingsData, setSettingsData] = useState<any>(null) */
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 
@@ -323,6 +323,7 @@ function Settings() {
 								<SimpleGrid templateColumns='repeat(3, 2fr)' gap='4' w='full'>
 									<NavLink to='/auth'>
 										<Button
+											w='full'
 											bg='transparent'
 											color='#FF4F12'
 											borderColor='#FF4F12'
