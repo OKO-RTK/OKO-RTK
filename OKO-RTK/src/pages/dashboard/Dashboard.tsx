@@ -1,3 +1,7 @@
+import General from './General'
+import Detailed from './Detailed'
+
+
 import Sidebar from '../../components/sidebar/Sidebar'
 import {
 	Flex,
@@ -14,11 +18,12 @@ import {
 } from '@chakra-ui/react'
 import { FiUpload} from 'react-icons/fi'
 import '../../index.css'
-import { useEffect, useState } from 'react'
+import { act, useEffect, useState } from 'react'
 
 function Dashboard() {
 
-	const [activeTab, setActiveTab] = useState<'groups' | 'devices'>('groups')
+	const [activeTab, setActiveTab] = useState<'general' | 'detailed'>('general')
+	const [detailed, setDetailed] = useState<Detailed[]>([])
 	
 
 	return (
@@ -69,13 +74,13 @@ function Dashboard() {
 									textAlign='center'
 									flex='1'
 									cursor='pointer'
-									bg={activeTab === 'groups' ? '#7B1EFF' : 'white'}
-									color={activeTab === 'groups' ? 'white' : '#7B1EFF'}
+									bg={activeTab === 'general' ? '#7B1EFF' : 'white'}
+									color={activeTab === 'general' ? 'white' : '#7B1EFF'}
 									_hover={{
-										bg: activeTab === 'groups' ? '#7B1EFF' : '#F7F0FF',
+										bg: activeTab === 'general' ? '#7B1EFF' : '#F7F0FF',
 									}}
-									onClick={() => setActiveTab('groups')}
-									transition='all 0.1s ease-in-out'
+									onClick={() => setActiveTab('general')}
+									transition='all 0.2s ease-in-out'
 								>
 									<Text>Общий</Text>
 								</Box>
@@ -90,17 +95,43 @@ function Dashboard() {
 									textAlign='center'
 									flex='1'
 									cursor='pointer'
-									bg={activeTab === 'devices' ? '#7B1EFF' : 'white'}
-									color={activeTab === 'devices' ? 'white' : '#7B1EFF'}
+									bg={activeTab === 'detailed' ? '#7B1EFF' : 'white'}
+									color={activeTab === 'detailed' ? 'white' : '#7B1EFF'}
 									_hover={{
-										bg: activeTab === 'devices' ? '#7B1EFF' : '#F7F0FF',
+										bg: activeTab === 'detailed' ? '#7B1EFF' : '#F7F0FF',
 									}}
-									onClick={() => setActiveTab('devices')}
-									transition='all 0.1s ease-in-out'
+									onClick={() => setActiveTab('detailed')}
+									transition='all 0.2s ease-in-out'
 								>
 									<Text>Детальный</Text>
 								</Box>
 							</Flex>
+							{activeTab === 'general' && (
+								<HStack
+									spaceX={2}
+									borderRadius='10px'
+									outline='1px solid #CCCCCC'
+									bg='white'
+									p='2px'
+									h='57.253%'
+									w='fit-content'
+									boxShadow='0 0 15px rgba(119, 0, 255, 0.3)'
+									transition='all 0.2s ease-in-out'
+								>
+									<Button
+										colorScheme={'purple'}
+										variant='outline'
+										borderRadius='10px'
+										h='100%'
+										w='fit-content'
+										fontSize='clamp(5px, 2.4vh, 40px)'
+										fontWeight={500}
+									>
+										Сохранить
+									</Button>
+								</HStack>
+							)}
+							{/* Кнопка "Экспорт" */}
 							<Dialog.Root>
 								<Dialog.Trigger asChild>
 									<Box
@@ -218,11 +249,11 @@ function Dashboard() {
 					overflowY='auto'
 				>
 					<Box bg='white' p={6} borderRadius='xl' minH='300px'>
-						<Text fontSize='xl' fontWeight='bold'>
-							Основной контент
-						</Text>
+						{activeTab === 'general' && <General />}
+						{activeTab === 'detailed' && <Detailed />}
 					</Box>
 				</Box>
+
 			</Flex>
 		</Flex>
 	)
