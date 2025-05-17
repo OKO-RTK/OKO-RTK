@@ -14,7 +14,13 @@ import {
 } from '@chakra-ui/react'
 import { FiUpload} from 'react-icons/fi'
 import '../../index.css'
+import { useEffect, useState } from 'react'
+
 function Dashboard() {
+
+	const [activeTab, setActiveTab] = useState<'groups' | 'devices'>('groups')
+	
+
 	return (
 		<Flex h='100vh' w='100vw' overflow='hidden' fontFamily='RostelecomBasis'>
 			{/* Sidebar (фиксированной ширины) */}
@@ -43,7 +49,58 @@ function Dashboard() {
 							</Text>
 						</Box>
 
-						<HStack h='100%'>
+						<HStack h='100%' spaceX={4}>
+							<Flex
+								borderRadius='10px'
+								outline='1px solid #CCCCCC'
+								bg='white'
+								p='2px'
+								h='57.253%'
+								w='fit-content'
+								boxShadow='0 0 15px rgba(119, 0, 255, 0.3)'
+								transition='all 0.2s ease-in-out'
+							>
+								<Box
+									alignContent='center'
+									paddingInline='5'
+									fontSize='clamp(5px, 2.4vh, 40px)'
+									fontWeight='500'
+									borderRadius='10px'
+									textAlign='center'
+									flex='1'
+									cursor='pointer'
+									bg={activeTab === 'groups' ? '#7B1EFF' : 'white'}
+									color={activeTab === 'groups' ? 'white' : '#7B1EFF'}
+									_hover={{
+										bg: activeTab === 'groups' ? '#7B1EFF' : '#F7F0FF',
+									}}
+									onClick={() => setActiveTab('groups')}
+									transition='all 0.1s ease-in-out'
+								>
+									<Text>Общий</Text>
+								</Box>
+
+								<Box
+									alignContent='center'
+									paddingInline='5'
+									h='100%'
+									fontSize='clamp(5px, 2.4vh, 40px)'
+									fontWeight='500'
+									borderRadius='10px'
+									textAlign='center'
+									flex='1'
+									cursor='pointer'
+									bg={activeTab === 'devices' ? '#7B1EFF' : 'white'}
+									color={activeTab === 'devices' ? 'white' : '#7B1EFF'}
+									_hover={{
+										bg: activeTab === 'devices' ? '#7B1EFF' : '#F7F0FF',
+									}}
+									onClick={() => setActiveTab('devices')}
+									transition='all 0.1s ease-in-out'
+								>
+									<Text>Детальный</Text>
+								</Box>
+							</Flex>
 							<Dialog.Root>
 								<Dialog.Trigger asChild>
 									<Box
