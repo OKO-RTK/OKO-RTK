@@ -17,7 +17,7 @@ function General() {
     setTimeout(() => {
       setData({ name: "General Data" });
       setLoading(false);
-    }, 2000);
+    });
   }, []);
 
   if (loading) {
