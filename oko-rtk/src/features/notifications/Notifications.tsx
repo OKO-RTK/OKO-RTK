@@ -65,50 +65,50 @@ function Notifications() {
 			<Box
 				maxH='600px'
 				w='100%'
-        borderRadius='20'
+				borderRadius='20'
 				overflowY='auto'
 				pr='4px'
 				css={{
 					'&::-webkit-scrollbar': { width: '3px' },
 					'&::-webkit-scrollbar-thumb': {
-						background: '#ccc',
+						background: '#BBBBBB',
 						borderRadius: '8px',
 					},
 				}}
 			>
 				<VStack>
-          {notifications.map(notification =>{
-          const { time, day } = formatDateTime(notification.created_at)
-          return (
-						<Flex
-							bg='#F4F4F5'
-							w='full'
-							h='60px'
-							px={3}
-							borderRadius='10px'
-							alignItems='center'
-							justifyContent='space-between'
-							fontSize='16px'
-						>
-							<Box>
-								<Text fontWeight='500' color='black'>
-									{notification.message}
-								</Text>
-								<Text fontWeight='400' color='#5A606D'>
-									{notification.message_discript}
-								</Text>
-							</Box>
-							<Box textAlign='right'>
-								<Text fontWeight='400' color='#5A606D'>
-									{time}
-								</Text>
-								<Text fontWeight='400' color='#5A606D'>
-									{day}
-								</Text>
-							</Box>
-						</Flex>
-					)
-          })}
+					{notifications.map(notification => {
+						const { time, day } = formatDateTime(notification.created_at)
+						return (
+							<Flex
+								bg='#F4F4F5'
+								w='full'
+								h='60px'
+								px={3}
+								borderRadius='10px'
+								alignItems='center'
+								justifyContent='space-between'
+								fontSize='16px'
+							>
+								<Box>
+									<Text fontWeight='500' color='black'>
+										{notification.message}
+									</Text>
+									<Text fontWeight='400' color='#5A606D'>
+										{notification.message_discript}
+									</Text>
+								</Box>
+								<Box textAlign='right'>
+									<Text fontWeight='400' color='#5A606D'>
+										{time}
+									</Text>
+									<Text fontWeight='400' color='#5A606D'>
+										{day}
+									</Text>
+								</Box>
+							</Flex>
+						)
+					})}
 				</VStack>
 			</Box>
 		</VStack>
