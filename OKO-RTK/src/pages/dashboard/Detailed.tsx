@@ -8,61 +8,40 @@ import {
 } from "@chakra-ui/react";
 
 function Detailed() {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<{ name: string } | null>(null);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setData({ name: "Detailed Data" });
-      setLoading(false);
-    });
-  }, []);
-
-  if (loading) {
-    return (
-      <Flex justifyContent="center" alignItems="center" height="100vh">
-        <Spinner size="xl" />
-      </Flex>
-    );
-  }
-
   return (
-    <Box p={4}>
-      <Grid
-        templateColumns="repeat(3, 1fr)"
-        templateRows="repeat(3, 1fr)"
-        gap={4}
-      >
-        <GridItem colSpan={1} rowSpan={1}>
-          <Box h="10" border="1px solid red" borderRadius="md" />
-        </GridItem>
+		<Box w='full'>
+			<Grid templateColumns='repeat(12, 1fr)' gap={4}>
+				{/* Левая вертикальная колонка (1/12 ширины, растягивается) */}
+				<GridItem colSpan={2} rowSpan={2}>
+					<Box bg='white' borderRadius='lg' h='100%' minH='150px' />
+				</GridItem>
 
-        <GridItem colSpan={2} rowSpan={1}>
-          <Box h="10" border="1px solid red" borderRadius="md" />
-        </GridItem>
+				{/* Верхний ряд, 2 блока */}
+				<GridItem colSpan={5}>
+					<Box bg='white' borderRadius='lg' h='150px' />
+				</GridItem>
+				<GridItem colSpan={5}>
+					<Box bg='white' borderRadius='lg' h='150px' />
+				</GridItem>
 
-        <GridItem colSpan={3} rowSpan={1}>
-          <Box h="10" border="1px solid red" borderRadius="md" />
-        </GridItem>
+				{/* Средний большой блок */}
+				<GridItem colSpan={10}>
+					<Box bg='white' borderRadius='lg' h='200px' />
+				</GridItem>
 
-        <GridItem colSpan={2} rowSpan={1}>
-          <Box h="10" border="1px solid red" borderRadius="md" />
-        </GridItem>
-
-        <GridItem colSpan={1} rowSpan={1}>
-          <Box h="10" border="1px solid red" borderRadius="md" />
-        </GridItem>
-
-        <GridItem colSpan={1} rowSpan={1}>
-          <Box h="10" border="1px solid red" borderRadius="md" />
-        </GridItem>
-
-        <GridItem colSpan={2} rowSpan={1}>
-          <Box h="10" border="1px solid red" borderRadius="md" />
-        </GridItem>
-      </Grid>
-    </Box>
-  );
+				{/* Три блока снизу */}
+				<GridItem colSpan={4}>
+					<Box bg='white' borderRadius='lg' h='150px' />
+				</GridItem>
+				<GridItem colSpan={4}>
+					<Box bg='white' borderRadius='lg' h='150px' />
+				</GridItem>
+				<GridItem colSpan={4}>
+					<Box bg='white' borderRadius='lg' h='150px' />
+				</GridItem>
+			</Grid>
+		</Box>
+	)
 }
 
 export default Detailed;

@@ -1,7 +1,3 @@
-import General from './General'
-import Detailed from './Detailed'
-
-
 import Sidebar from '../../components/sidebar/Sidebar'
 import {
 	Flex,
@@ -18,11 +14,13 @@ import {
 } from '@chakra-ui/react'
 import { FiUpload} from 'react-icons/fi'
 import '../../index.css'
-import { act, useEffect, useState } from 'react'
+import Detailed from './Detailed'
+import General from './General'
+import { useEffect, useState } from 'react'
 
 function Dashboard() {
 
-	const [activeTab, setActiveTab] = useState<'general' | 'detailed'>('general')
+	const [activeTab, setActiveTab] = useState<'general' | 'detailed'>('detailed')
 	
 
 	return (
@@ -79,7 +77,7 @@ function Dashboard() {
 										bg: activeTab === 'general' ? '#7B1EFF' : '#F7F0FF',
 									}}
 									onClick={() => setActiveTab('general')}
-									transition='all 0.2s ease-in-out'
+									transition='all 0.1s ease-in-out'
 								>
 									<Text>Общий</Text>
 								</Box>
@@ -100,37 +98,11 @@ function Dashboard() {
 										bg: activeTab === 'detailed' ? '#7B1EFF' : '#F7F0FF',
 									}}
 									onClick={() => setActiveTab('detailed')}
-									transition='all 0.2s ease-in-out'
+									transition='all 0.1s ease-in-out'
 								>
 									<Text>Детальный</Text>
 								</Box>
 							</Flex>
-							{activeTab === 'general' && (
-								<HStack
-									spaceX={2}
-									borderRadius='10px'
-									outline='1px solid #CCCCCC'
-									bg='white'
-									p='2px'
-									h='57.253%'
-									w='fit-content'
-									boxShadow='0 0 15px rgba(119, 0, 255, 0.3)'
-									transition='all 0.2s ease-in-out'
-								>
-									<Button
-										colorScheme={'purple'}
-										variant='outline'
-										borderRadius='10px'
-										h='100%'
-										w='fit-content'
-										fontSize='clamp(5px, 2.4vh, 40px)'
-										fontWeight={500}
-									>
-										Сохранить
-									</Button>
-								</HStack>
-							)}
-							{/* Кнопка "Экспорт" */}
 							<Dialog.Root>
 								<Dialog.Trigger asChild>
 									<Box
@@ -243,14 +215,13 @@ function Dashboard() {
 					as='main'
 					flex='1'
 					bg='#F4F4F5'
-					paddingInline={5}
+					paddingInline='5'
 					py={6}
 					overflowY='auto'
 				>
-					{activeTab === 'general' && <General />}
-					{activeTab === 'detailed' && <Detailed />}
+					{activeTab.includes('detailed') && <Detailed />}
+					{activeTab.includes('general') && <General />}
 				</Box>
-
 			</Flex>
 		</Flex>
 	)
