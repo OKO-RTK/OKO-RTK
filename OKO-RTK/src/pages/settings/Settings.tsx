@@ -15,7 +15,7 @@ import {
 import { FiCheck, FiX, FiLogOut } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-
+import { toaster } from '@/components/ui/toaster'
 import { NavLink } from 'react-router-dom'
 
 type User = {
@@ -62,9 +62,17 @@ function Settings() {
 			setInitialData(data)
 			if (response.data.access_token) 
 				localStorage.setItem('token', response.data.access_token);
-			alert('Данные успешно обновлены')
-		} catch (error) {
-			alert("Ошибка при сохранении данных " + error)
+
+			toaster.success({
+				title: 'Данные успешно обновлены',
+				duration: 5000,
+			})
+		} catch (err) {
+			toaster.success({
+				title: 'Ошибка при сохранении данных ',
+				description: 'Ошибка ' + err,
+				duration: 5000,
+			})
 		}
 	}
 		
@@ -82,7 +90,11 @@ function Settings() {
 				setData(response.data)
 				setInitialData(response.data)
 			} catch (err) {
-				setError('Ошибка при получении данных настроек')
+				toaster.success({
+					title: 'Ошибка при получении данных ',
+					description: 'Ошибка ' + err,
+					duration: 5000,
+				})
 			} finally {
 				setLoading(false)
 			}

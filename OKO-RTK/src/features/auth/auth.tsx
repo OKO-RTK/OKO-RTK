@@ -2,6 +2,9 @@ import { Box, Button, Input, Text, VStack, HStack } from '@chakra-ui/react'
 import { useState } from 'react'
 import axios, { AxiosError } from 'axios'
 import {useNavigate} from 'react-router-dom'
+import { toaster } from '@/components/ui/toaster'
+
+
 const CustomTabs = () => {
 	const [activeTab, setActiveTab] = useState<'user' | 'admin'>('user')
 	const [isRegistering, setIsRegistering] = useState(false)
@@ -33,7 +36,10 @@ const CustomTabs = () => {
 			})
 
 			console.log('Login success:', response.data)
-			alert('Ваш токен: ' + response.data.access_token)
+			toaster.success({
+				title: 'Ваш токен: ' + response.data.access_token,
+				duration: 5000,
+			})
 			localStorage.setItem('token', response.data.access_token)
 			navigate('/')
 		} catch (error) {
@@ -77,7 +83,11 @@ const CustomTabs = () => {
 				},
 			})
 
-			alert('Регистрация прошла успешно! Теперь вы можете войти.')
+			toaster.success({
+				title:
+					'Регистрация прошла успешно! Теперь вы можете войти.',
+				duration: 5000,
+			})
 			console.log('Register success:', response.data)
 			setIsRegistering(false)
 		} catch (error) {

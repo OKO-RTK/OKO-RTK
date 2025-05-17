@@ -18,7 +18,7 @@ import {
 import { FiPlus, FiCheck, FiX } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-
+import { Toaster, toaster } from '@/components/ui/toaster'
 
 interface Device {				//информация об устройстве
   device_name: string
@@ -49,25 +49,36 @@ function DevicesAndGroups() {
       const devicesArr = response.data.devices
       if (Array.isArray(devicesArr)) {
         setDevices(devicesArr.slice(0, 50))
-      } else alert('Ошибка при формировании массива устройств')
+      } 
+      else{
+        toaster.success({
+					title: 'Ошибка при формировании массива устройств',
+					duration: 5000,
+				})
+      }
     } catch (err) {
-      alert('Ошибка при загрузке девайсов ' + err)
+      toaster.error({
+				title: 'Ошибка при загрузке списка устройств',
+				description: 'Ошибка ' + err,
+				duration: 5000,
+			})
     }
   }
 
   const [devicesKey, setDevicesKey] = useState(0)
 
   const [deviceData, setDeviceData] = useState({
-		device_name: '',
-		ip_address: '',
-		serial_number: '',
-		device_type: 'server',
 		device_group: 'group1',
-		monitoring_interval: '',
-		type_check: ['ping'],
-		port_number: '',
+		device_name: '',
 		device_login: '',
 		device_password: '',
+		device_type: 'server',
+		ip_address: '',
+		monitoring_interval: '',
+		port: '',
+		serial_number: '',
+		type_check: ['ping'],
+		user_id: '',
 	})
 
   useEffect(() => {
@@ -83,13 +94,15 @@ function DevicesAndGroups() {
 				'http://130.193.56.188:3000/device/add',
 				{
 					device_name: deviceData.device_name,
+					device_login: deviceData.device_login,
+					device_password: deviceData.device_password,
 					ip_address: deviceData.ip_address,
 					serial_number: deviceData.serial_number,
 					device_type: deviceData.device_type,
 					device_group: deviceData.device_group,
 					monitoring_interval: parseInt(deviceData.monitoring_interval),
 					type_check: deviceData.type_check,
-          port_number: deviceData.port_number,
+					port: deviceData.port,
 				},
 				{
 					headers: {
@@ -98,12 +111,18 @@ function DevicesAndGroups() {
 					},
 				}
 			)
-    alert('Тип проверки - ' + deviceData.type_check)
+    toaster.success({
+			title: 'Устройство ' + deviceData.device_name + ' успешно создано',
+			duration: 5000,
+		})
     setDevicesKey(prev => prev + 1)
     fetchDevices()
   }
     catch (err){
-      alert ('Ошибка при добавлении устройства ' + err)
+      toaster.success({
+				title: 'Ошибка при добавлении устройства',
+				duration: 5000,
+			})
     }
   }
 
@@ -219,6 +238,7 @@ function DevicesAndGroups() {
 												fontWeight='500'
 												paddingRight='4px'
 											>
+												<Toaster/>
 												Добавить устройство
 											</Text>
 											<FiPlus className='h-[60%] w-[60%] stroke-[2]' />
@@ -714,7 +734,7 @@ function DevicesAndGroups() {
 												fontWeight='500'
 												paddingRight='4px'
 											>
-												Добавить группу
+												Создать группу
 											</Text>
 											<FiPlus className='h-[60%] w-[60%] stroke-[2]' />
 										</Box>

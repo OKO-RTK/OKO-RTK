@@ -16,7 +16,7 @@ import type { IconType } from 'react-icons'
 import { FiServer, FiGlobe, FiMonitor, FiX, FiCheck } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-
+import { toaster } from '@/components/ui/toaster'
 interface Device {
 	//информация об устройстве
 	device_id: string
@@ -27,9 +27,22 @@ interface Device {
 	status: string
 }
 
-function Devices() {
+interface DeviceExtended {
+	device_group: string
+	device_name: string
+	device_login: string
+	device_password: string
+	device_type: string
+	ip_address: string
+	monitoring_interval: string
+	port: string
+	serial_number: string
+	type_check: string[]
+	user_id: string
+}
 
-  const items = [
+function Devices() {
+	const items = [
 		//массив для реализации выбора метода мониторинга
 		{ value: 'ping', title: 'Ping' },
 		{ value: 'snmp', title: 'SNMP' },
@@ -38,13 +51,18 @@ function Devices() {
 
 	const [devices, setDevices] = useState<Device[]>([])
 
-	const [data, setData] = useState<Device>({
-		device_id: '',
+	const [extendedData, setExtendedData] = useState<DeviceExtended>({
+		device_group: '',
 		device_name: '',
-		ip_address: '',
+		device_login: '',
+		device_password: '',
 		device_type: '',
-		checked_at: '',
-		status: '',
+		ip_address: '',
+		monitoring_interval: '',
+		port: '',
+		serial_number: '',
+		type_check: [],
+		user_id: '',
 	})
 
 	const fetchDevices = async () => {
@@ -62,18 +80,95 @@ function Devices() {
 			const devicesArr = response.data.devices
 			if (Array.isArray(devicesArr)) {
 				setDevices(devicesArr.slice(0, 50))
-			} else alert('Ошибка при формировании массива устройств')
+			} 
+			else{
+				toaster.error({
+					title: 'Ошибка при формировании массива устройств ',
+					duration: 5000,
+				})
+			}
 		} catch (err) {
-			alert('Ошибка при загрузке уведомлений ' + err)
+			toaster.error({
+				title: 'Ошибка при формировании списка устройств ',
+				description: 'Ошибка ' + err,
+				duration: 5000,
+			})
 		}
 	}
 
-	const fetchDeviceById = async (id:string) =>{
-		alert('ID = ')
+  const handleSave = async (id: string) => {
+		try {
+			const token = localStorage.getItem('token')
+			await axios.put(
+				'http://130.193.56.188:3000/device/' + id + '/edit',
+				{
+					device_name: extendedData.device_name,
+					device_login: extendedData.device_login,
+					device_password: extendedData.device_password,
+					ip_address: extendedData.ip_address,
+					serial_number: extendedData.serial_number,
+					device_type: extendedData.device_type,
+					device_group: extendedData.device_group,
+					monitoring_interval: parseInt(extendedData.monitoring_interval),
+					type_check: extendedData.type_check,
+					port: extendedData.port,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-type': 'application/json',
+					},
+				}
+			)
+			toaster.success({
+				title: 'Изменения успешно сохранёны',
+				description:
+					'Информация о устройстве ' + extendedData.device_name + ' сохранена',
+				duration: 5000,
+			})
+			fetchDevices()
+		} catch (err) {
+				toaster.error({
+				title: 'Ошибка при добавлении устройств ',
+				description: 'Ошибка ' + err,
+				duration: 5000,
+			})
+		}
+	}
+
+	const handleDelete = async (id: string) => {
+		const token = localStorage.getItem('token')
+		try{
+			await axios.delete<{device: DeviceExtended}>(
+				`http://130.193.56.188:3000/device/` + id+`/delete`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json',
+					},
+				}
+			)
+			toaster.success({
+				title:
+					'Устройство ' + extendedData.device_name + ' удалено',
+				duration: 5000,
+			})
+			fetchDevices()
+		}
+		catch(err){
+			toaster.success({
+				title: 'Ошибка при удалении устройства ',
+				description: 'Ошибка ' + err,
+				duration: 5000,
+			})
+		}
+	}
+
+	const fetchDeviceById = async (id: string) => {
 		const token = localStorage.getItem('token')
 		try {
-			const response = await axios.get<Device>(
-				`http://130.193.56.188:3000/device/`+id,
+			const response = await axios.get<{device: DeviceExtended}>(
+				`http://130.193.56.188:3000/device/` + id,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -82,10 +177,25 @@ function Devices() {
 				}
 			)
 
-			setData(response.data)
-			alert('Статус устройства - ' + data.device_id)
+			const raw = response.data.device
+			const parsed = {
+				...raw,
+				type_check:
+					typeof raw.type_check === 'string'
+						? JSON.parse(raw.type_check)
+						: raw.type_check,
+				port: typeof raw.port === 'string' ? raw.port.slice(1, -1) : ''
+			}
+
+			setExtendedData(parsed)
+
+			/* alert('Тип проверки - ' + extendedData.type_check) */
 		} catch (err) {
-			alert('Ошибка при загрузке устройства: ' + err)
+			toaster.success({
+				title: 'Ошибка при загрузке устройства ',
+				description: 'Ошибка ' + err,
+				duration: 5000,
+			})
 		}
 	}
 
@@ -95,8 +205,9 @@ function Devices() {
 		}
 	}, [])
 
-	const getColorByStatus = (status:string):string=>{			//функция для задания цвета границы в зависимости от статуса устройства
-		switch (status){
+	const getColorByStatus = (status: string): string => {
+		//функция для задания цвета границы в зависимости от статуса устройства
+		switch (status) {
 			case 'Работает':
 				return '#0ACB5B'
 			case 'Предупреждение':
@@ -122,7 +233,8 @@ function Devices() {
 		}
 	}
 
-	const formatDate = (isoString: string) => {					//функция форматирования даты
+	const formatDate = (isoString: string) => {
+		//функция форматирования даты
 		const date = new Date(isoString)
 		const time = date.toLocaleTimeString([], {
 			hour: '2-digit',
@@ -259,21 +371,28 @@ function Devices() {
 															boxShadow='0 0 15px rgba(0, 0, 0, 0.1)'
 														>
 															<Text fontWeight={500} fontSize={20} mb={2}>
-																Введите название вашего устройства
+																Название
 															</Text>
 															<Input
+																required={true}
 																placeholder={'Название вашего устройства'}
 																borderColor={'transparent'}
 																bg='#F2F3F4'
 																color='black'
 																id='device_name'
-																value={data.device_name}
+																value={extendedData.device_name}
 																fontSize='16px'
 																_placeholder={{ opacity: 0.6 }}
 																h='40px'
 																outlineWidth={1}
 																borderRadius={10}
 																fontWeight={500}
+																onChange={e =>
+																	setExtendedData({
+																		...extendedData,
+																		device_name: e.target.value,
+																	})
+																}
 															/>
 														</Box>
 
@@ -297,10 +416,16 @@ function Devices() {
 																fontSize='16px'
 																_placeholder={{ opacity: 0.6 }}
 																h='40px'
-																value={data.ip_address}
+																value={extendedData.ip_address}
 																outlineWidth={1}
 																borderRadius={10}
 																fontWeight={500}
+																onChange={e =>
+																	setExtendedData({
+																		...extendedData,
+																		ip_address: e.target.value,
+																	})
+																}
 															/>
 														</Box>
 
@@ -319,11 +444,18 @@ function Devices() {
 																bg='#F2F3F4'
 																color='black'
 																fontSize='16px'
+																value={extendedData.serial_number}
 																_placeholder={{ opacity: 0.6 }}
 																h='40px'
 																outlineWidth={1}
 																borderRadius={10}
 																fontWeight={500}
+																onChange={e =>
+																	setExtendedData({
+																		...extendedData,
+																		serial_number: e.target.value,
+																	})
+																}
 															/>
 														</Box>
 
@@ -344,8 +476,14 @@ function Devices() {
 																	borderRadius={10}
 																	borderColor={'transparent'}
 																	fontWeight={500}
-																	/* value={deviceData.device_type} */
+																	value={extendedData.device_type}
 																	cursor='pointer'
+																	onChange={e =>
+																		setExtendedData(prev => ({
+																			...prev,
+																			device_type: e.target.value,
+																		}))
+																	}
 																>
 																	<option
 																		value='server'
@@ -415,7 +553,13 @@ function Devices() {
 																	borderColor={'transparent'}
 																	fontWeight={500}
 																	cursor='pointer'
-																	/* value={deviceData.device_group} */
+																	value={extendedData.device_group}
+																	onChange={e =>
+																		setExtendedData(prev => ({
+																			...prev,
+																			device_group: e.target.value,
+																		}))
+																	}
 																>
 																	<option
 																		value='group1'
@@ -441,7 +585,7 @@ function Devices() {
 															boxShadow='0 0 15px rgba(0, 0, 0, 0.1)'
 														>
 															<Text fontWeight={500} fontSize={20} mb={2}>
-																Введите интервал проверки
+																Интервал проверки
 															</Text>
 															<Input
 																placeholder={
@@ -451,11 +595,18 @@ function Devices() {
 																bg='#F2F3F4'
 																color='black'
 																fontSize='16px'
+																value={extendedData.monitoring_interval}
 																_placeholder={{ opacity: 0.6 }}
 																h='40px'
 																outlineWidth={1}
 																borderRadius={10}
 																fontWeight={500}
+																onChange={e =>
+																	setExtendedData({
+																		...extendedData,
+																		monitoring_interval: e.target.value,
+																	})
+																}
 															/>
 														</Box>
 
@@ -469,13 +620,17 @@ function Devices() {
 																Выберите методы мониторинга
 															</Text>
 															<CheckboxGroup
-																defaultValue={['ping']}
-																/* 																onValueChange={(values: string[]) =>
-																	setDeviceData(prev => ({
+																value={
+																	Array.isArray(extendedData.type_check)
+																		? extendedData.type_check
+																		: []
+																}
+																onValueChange={(values: string[]) =>
+																	setExtendedData(prev => ({
 																		...prev,
 																		type_check: values,
 																	}))
-																} */
+																}
 															>
 																<Flex gap='2'>
 																	{items.map(item => (
@@ -511,7 +666,7 @@ function Devices() {
 																</Flex>
 															</CheckboxGroup>
 														</Box>
-														{/* 														{deviceData.type_check.includes('snmp') && (
+														{extendedData.type_check.includes('snmp') && (
 															<Box
 																bg='white'
 																p={'10px'}
@@ -532,17 +687,18 @@ function Devices() {
 																	outlineWidth={1}
 																	borderRadius={10}
 																	fontWeight={500}
+																	value={extendedData.device_login}
 																	onChange={e =>
-																		setDeviceData(prev => ({
-																			...prev,
+																		setExtendedData({
+																			...extendedData,
 																			device_login: e.target.value,
-																		}))
+																		})
 																	}
 																/>
 															</Box>
 														)}
 
-														{deviceData.type_check.includes('snmp') && (
+														{extendedData.type_check.includes('snmp') && (
 															<Box
 																bg='white'
 																p={'10px'}
@@ -564,17 +720,18 @@ function Devices() {
 																	outlineWidth={1}
 																	borderRadius={10}
 																	fontWeight={500}
+																	value={extendedData.device_password}
 																	onChange={e =>
-																		setDeviceData(prev => ({
-																			...prev,
-																			device_password: e.target.value,
-																		}))
+																		setExtendedData({
+																			...extendedData,
+																			device_login: e.target.value,
+																		})
 																	}
 																/>
 															</Box>
 														)}
 
-														{deviceData.type_check.includes('port') && (
+														{extendedData.type_check.includes('port') && (
 															<Box
 																bg='white'
 																p={'10px'}
@@ -597,40 +754,70 @@ function Devices() {
 																	outlineWidth={1}
 																	borderRadius={10}
 																	fontWeight={500}
+																	value={extendedData.port}
 																	onChange={e =>
-																		setDeviceData(prev => ({
-																			...prev,
-																			port_number: e.target.value,
-																		}))
+																		setExtendedData({
+																			...extendedData,
+																			port: e.target.value,
+																		})
 																	}
 																/>
-																</Box>
-															)} */}
+															</Box>
+														)}
 													</Dialog.Body>
 												</Box>
 												<Dialog.Footer p='10px' w='99.5%'>
 													{/* тут небольшой костыль - из-за Dialog.ActionTrigger модальное окно закрывается сразу по нажатии кнопки, а не ждет ответа функции handleCreateDevice */}
+													{/* Кнопка "Сохранить" */}
 													<Dialog.ActionTrigger asChild>
-														<Button
-															bg='white'
-															color='#7700FF'
-															borderColor='#7700FF'
-															borderWidth='2px'
-															h='40px'
-															w='full'
-															fontSize='18px'
-															fontWeight='500'
-															borderRadius={10}
-															_hover={{
-																boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)',
-															}}
-															_focus={{ outline: 'none' }}
-															transition='all 0.2s ease-in-out'
-															/* onClick={handleCreateDevice} */
+														<HStack
+															justifyContent='center'
+															alignItems='center'
+															w='100%'
 														>
-															<FiCheck />
-															Сохранить изменения
-														</Button>
+															<Button
+																bg='white'
+																color='#FF4F12'
+																borderColor='#FF4F12'
+																borderWidth='2px'
+																h='40px'
+																w='49%'
+																fontSize='18px'
+																fontWeight='500'
+																borderRadius={10}
+																_hover={{
+																	boxShadow:
+																		'0 0px 15px rgba(255, 79, 18, 0.3)',
+																}}
+																_focus={{ outline: 'none' }}
+																transition='all 0.2s ease-in-out'
+																onClick={() => handleDelete(currentId)}
+															>
+																<FiX />
+																Удалить устройство
+															</Button>
+															<Button
+																bg='white'
+																color='#7700FF'
+																borderColor='#7700FF'
+																borderWidth='2px'
+																h='40px'
+																w='49%'
+																fontSize='18px'
+																fontWeight='500'
+																borderRadius={10}
+																_hover={{
+																	boxShadow:
+																		'0 0px 15px rgba(119, 0, 255, 0.3)',
+																}}
+																_focus={{ outline: 'none' }}
+																transition='all 0.2s ease-in-out'
+																onClick={() => handleSave(currentId)}
+															>
+																<FiCheck />
+																Сохранить изменения
+															</Button>
+														</HStack>
 													</Dialog.ActionTrigger>
 												</Dialog.Footer>
 											</Dialog.Content>
