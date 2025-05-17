@@ -30,7 +30,7 @@ function Detailed() {
 
   return (
     <Box p={4}>
-      <Heading as="h1" size="lg" mb={4} bg={"black"} color={"white"}>
+      <Heading as="h1" size="lg" mb={4} color={"white"}>
         dETAILED Information
       </Heading>
       <Text fontSize="xl">{data?.name}</Text>

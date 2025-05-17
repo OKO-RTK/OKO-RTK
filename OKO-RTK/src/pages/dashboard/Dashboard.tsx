@@ -23,7 +23,6 @@ import { act, useEffect, useState } from 'react'
 function Dashboard() {
 
 	const [activeTab, setActiveTab] = useState<'general' | 'detailed'>('general')
-	const [detailed, setDetailed] = useState<Detailed[]>([])
 	
 
 	return (
@@ -244,14 +243,12 @@ function Dashboard() {
 					as='main'
 					flex='1'
 					bg='#F4F4F5'
-					px={{ base: 5, md: 14 }}
+					paddingInline={5}
 					py={6}
 					overflowY='auto'
 				>
-					<Box bg='white' p={6} borderRadius='xl' minH='300px'>
-						{activeTab === 'general' && <General />}
-						{activeTab === 'detailed' && <Detailed />}
-					</Box>
+					{activeTab === 'general' && <General />}
+					{activeTab === 'detailed' && <Detailed />}
 				</Box>
 
 			</Flex>
