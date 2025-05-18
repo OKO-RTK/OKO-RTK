@@ -14,7 +14,7 @@ function Header() {
 			<Flex align='center' gap={4} h='full'>
 				<Flex align='center' gap={2.5}>
 					<Image
-						src='/rtk_logo.png'
+						src='images/rtk_logo.png'
 						alt='ОКО Ростелеком logo'
 						boxSize='56px'
 						objectFit='contain'

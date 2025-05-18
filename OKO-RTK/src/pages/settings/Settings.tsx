@@ -15,8 +15,8 @@ import {
 import { FiCheck, FiX, FiLogOut } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { toaster } from '@/components/ui/toaster'
 import { NavLink } from 'react-router-dom'
+import { Toaster, toaster } from '@/components/ui/toaster'
 
 type User = {
 	username: string
@@ -31,10 +31,10 @@ function Settings() {
 	
 /*   const [settingsData, setSettingsData] = useState<any>(null) */
 	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState<string | null>(null)
 
 	const [initialData, setInitialData] = useState<User | null>(null)
 
+	const [showToaster, setShowToaster] = useState(true)
 
 	const [data, setData] = useState<User>({
 		username: '',
@@ -43,9 +43,7 @@ function Settings() {
 		phone: '',
 		role: '',
 	})
-
-
-
+	
 	const handleSave = async () => {
 		try {
 			const token = localStorage.getItem('token')
@@ -309,7 +307,12 @@ function Settings() {
 									</NativeSelect.Root>
 								</Box>
 								<Box w='100%'>
-									<Switch.Root>
+									<Switch.Root
+										checked={showToaster}
+										onChange={e =>
+											setShowToaster((e.target as HTMLInputElement).checked)
+										}
+									>
 										<Switch.HiddenInput />
 										<Switch.Control
 											bg='gray.200'
@@ -331,6 +334,7 @@ function Settings() {
 											Отображать уведомления в интерфейсе
 										</Switch.Label>
 									</Switch.Root>
+									{showToaster && <Toaster />}
 								</Box>
 								<SimpleGrid templateColumns='repeat(3, 2fr)' gap='4' w='full'>
 									<NavLink to='/auth'>

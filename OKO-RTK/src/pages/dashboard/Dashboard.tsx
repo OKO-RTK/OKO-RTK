@@ -4,24 +4,80 @@ import {
 	Box,
 	Text,
 	HStack,
-	SegmentGroup,
 	Button,
 	CloseButton,
 	Dialog,
 	Portal,
 	Input,
 	NativeSelect,
+	Select,
+	createListCollection,
 } from '@chakra-ui/react'
 import { FiUpload} from 'react-icons/fi'
 import '../../index.css'
 import Detailed from './Detailed'
 import General from './General'
 import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { toaster } from '@/components/ui/toaster'
+
+
+interface Device {
+	device_id: string
+	device_name: string
+	ip_address: string
+	device_type: string
+	checked_at: string
+	status: string
+}
+
 
 function Dashboard() {
 
 	const [activeTab, setActiveTab] = useState<'general' | 'detailed'>('detailed')
-	
+
+	const [devices, setDevices] = useState<Device[]>([])
+
+	const [deviceData, setDeviceData] = useState({
+		device_id: '',
+		device_name: '',
+	})
+	const fetchDevices = async () => {
+		const token = localStorage.getItem('token')
+		try {
+			const response = await axios.get<{ devices: Device[] }>(
+				'http://130.193.56.188:3000/device',
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json',
+					},
+				}
+			)
+			const devicesArr = response.data.devices
+			if (Array.isArray(devicesArr)) {
+				setDevices(devicesArr.slice(0, 50))
+			} 
+			else{
+				toaster.error({
+					title: 'Ошибка при формировании массива устройств ',
+					duration: 5000,
+				})
+			}
+		} catch (err) {
+			toaster.error({
+				title: 'Ошибка при формировании списка устройств ',
+				description: 'Ошибка ' + err,
+				duration: 5000,
+			})
+		}
+	}
+		
+	useEffect(() => {
+		if (location.pathname === '/') {
+			fetchDevices()
+		}
+	}, [])
 
 	return (
 		<Flex h='100vh' w='100vw' overflow='hidden' fontFamily='RostelecomBasis'>
@@ -103,6 +159,44 @@ function Dashboard() {
 									<Text>Детальный</Text>
 								</Box>
 							</Flex>
+							<NativeSelect.Root>
+								<NativeSelect.Field
+									bg='white'
+									boxShadow='0 0 15px rgba(119, 0, 255, 0.3)'
+									color='#7700FF'
+									border='1px solid #CCCCCC'
+									fontSize='16px'
+									borderRadius={10}
+									borderColor={'transparent'}
+									fontWeight={500}
+									cursor='pointer'
+									value={deviceData.device_name}
+									onChange={e =>
+										setDeviceData(prev => ({
+											...prev,
+											device_name: e.target.value,
+										}))
+									}
+								>
+									<option
+										value=''
+										hidden
+										className='!bg-[#F2F3F4] text-gray-500'
+									>
+										Выберите устройство
+									</option>
+									{devices.map(device => (
+										<option
+											key={device.device_id}
+											value={device.device_name}
+											className='!bg-[#F2F3F4]'
+										>
+											{device.device_name}
+										</option>
+									))}
+								</NativeSelect.Field>
+								<NativeSelect.Indicator />
+							</NativeSelect.Root>
 							<Dialog.Root>
 								<Dialog.Trigger asChild>
 									<Box

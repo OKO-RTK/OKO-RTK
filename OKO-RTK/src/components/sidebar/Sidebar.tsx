@@ -22,7 +22,7 @@ function Sidebar(){
 			justifyContent='space-between'
 		>
 			<VStack gap={0}>
-				<Image src='/rtk_logo.png' width='46.875%' mt='15%' mb='15%' />
+				<Image src='images/rtk_logo.png' width='46.875%' mt='15%' mb='15%' />
 				<Box w='100%' h='1px' bg='#5A606D' />
 
 				<NavLink

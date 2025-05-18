@@ -19,7 +19,7 @@ function AuthBody() {
 					<div className='border-red-400'>
 						<NavLink to='/	'>
 							<img
-								src='/auth_art.png'
+								src='images/auth_art.png'
 								alt='Арт'
 								className='w-full h-auto max-h-[703px] object-contain'
 							/>
