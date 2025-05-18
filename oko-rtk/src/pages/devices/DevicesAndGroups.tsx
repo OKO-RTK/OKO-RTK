@@ -1,7 +1,7 @@
-import Sidebar from '../../components/sidebar/Sidebar'
-import Devices from './Devices'
-import Groups from './Groups'
-
+import { FiPlus, FiCheck, FiX } from 'react-icons/fi'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { Toaster, toaster } from '@/components/ui/toaster'
 import {
   Flex,
   Box,
@@ -15,10 +15,9 @@ import {
   CheckboxCard,
   CheckboxGroup,
 } from '@chakra-ui/react'
-import { FiPlus, FiCheck, FiX } from 'react-icons/fi'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import { Toaster, toaster } from '@/components/ui/toaster'
+import Sidebar from '../../components/sidebar/Sidebar'
+import Devices from './Devices'
+import Groups from './Groups'
 
 interface Device {				//информация об устройстве
   device_name: string
@@ -28,12 +27,41 @@ interface Device {				//информация об устройстве
   status: string
 }
 
+interface Group {
+	group_id: string
+	group_name: string
+	group_created_at: string
+	num_of_devices: string
+}
+
 function DevicesAndGroups() {
 
   const [activeTab, setActiveTab] = useState<'groups' | 'devices'>('devices')
-
-  const [devices, setDevices] = useState<Device[]>([])
   
+  const [devices, setDevices] = useState<Device[]>([])
+  const [devicesKey, setDevicesKey] = useState(0)
+  const [groupsKey, setGroupsKey] = useState(0)
+
+  const [groups, setGroups] = useState<Group[]>([])
+
+	const [deviceData, setDeviceData] = useState({
+		device_group: '',
+		device_name: '',
+		device_login: '',
+		device_password: '',
+		device_type: 'server',
+		ip_address: '',
+		monitoring_interval: '',
+		port: '',
+		serial_number: '',
+		type_check: ['ping'],
+		user_id: '',
+	})
+
+  const [groupData, setGroupData] = useState({
+		group_name: '',
+	})
+
   const fetchDevices = async () => {
     const token = localStorage.getItem('token')
     try {
@@ -51,7 +79,7 @@ function DevicesAndGroups() {
         setDevices(devicesArr.slice(0, 50))
       } 
       else{
-        toaster.success({
+        toaster.error({
 					title: 'Ошибка при формировании массива устройств',
 					duration: 5000,
 				})
@@ -64,22 +92,6 @@ function DevicesAndGroups() {
 			})
     }
   }
-
-  const [devicesKey, setDevicesKey] = useState(0)
-
-  const [deviceData, setDeviceData] = useState({
-		device_group: 'group1',
-		device_name: '',
-		device_login: '',
-		device_password: '',
-		device_type: 'server',
-		ip_address: '',
-		monitoring_interval: '',
-		port: '',
-		serial_number: '',
-		type_check: ['ping'],
-		user_id: '',
-	})
 
   useEffect(() => {
     if (location.pathname === '/devices') {
@@ -119,12 +131,77 @@ function DevicesAndGroups() {
     fetchDevices()
   }
     catch (err){
-      toaster.success({
+      toaster.error({
 				title: 'Ошибка при добавлении устройства',
 				duration: 5000,
 			})
     }
   }
+
+
+  const fetchGroups = async () => {
+      const token = localStorage.getItem('token')
+      try {
+        const response = await axios.get<{ groups: Group[] }>(
+          'http://130.193.56.188:3000/group',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        const groupsArr = response.data.groups
+        if (Array.isArray(groupsArr)) {
+          setGroups(groupsArr)
+        } 
+        else{
+          toaster.error({
+            title: 'Ошибка при формировании массива групп',
+            duration: 5000,
+          })
+        }
+      } catch (err) {
+        toaster.error({
+          title: 'Ошибка при формировании массива групп ',
+          description: 'Ошибка при загрузке списка групп ' + err,
+          duration: 5000,
+        })
+      }
+    }
+
+
+  const handleCreateGroup = async () => {
+		try {
+			const token = localStorage.getItem('token')
+			await axios.post(
+				'http://130.193.56.188:3000/group/add',
+				{
+					group_name: groupData.group_name,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-type': 'application/json',
+					},
+				}
+			)
+			toaster.success({
+				title: 'Группа ' + groupData.group_name + ' успешно создана',
+				duration: 5000,
+			})
+			setGroupsKey(prev => prev + 1)
+			fetchGroups()
+		} catch (err) {
+			toaster.error({
+				title: 'Ошибка при создании группы',
+        description: 'Ошибка: ' + err, 
+				duration: 5000,
+			})
+		}
+	}
+
+
 
   const items = [																			//массив для реализации выбора метода мониторинга
     { value: 'ping', title: 'Ping' },
@@ -134,6 +211,7 @@ function DevicesAndGroups() {
   
   return (
 		<Flex h='100vh' w='100vw' overflow='hidden' fontFamily='RostelecomBasis'>
+			<Toaster />
 			{/* Sidebar (фиксированной ширины) */}
 			<Sidebar />
 
@@ -231,6 +309,7 @@ function DevicesAndGroups() {
 											}}
 											transition='all 0.2s ease-in-out'
 											cursor='pointer'
+											onClick={fetchGroups}
 										>
 											<Text
 												whiteSpace='nowrap'
@@ -238,7 +317,6 @@ function DevicesAndGroups() {
 												fontWeight='500'
 												paddingRight='4px'
 											>
-												<Toaster/>
 												Добавить устройство
 											</Text>
 											<FiPlus className='h-[60%] w-[60%] stroke-[2]' />
@@ -300,6 +378,7 @@ function DevicesAndGroups() {
 																Введите название вашего устройства
 															</Text>
 															<Input
+																autoFocus={false}
 																placeholder={'Название вашего устройства'}
 																borderColor={'transparent'}
 																bg='#F2F3F4'
@@ -482,17 +561,22 @@ function DevicesAndGroups() {
 																	}
 																>
 																	<option
-																		value='group1'
-																		className='!bg-[#F2F3F4]'
+																		value=''
+																		disabled
+																		hidden
+																		className='!bg-[#F2F3F4] text-gray-500'
 																	>
-																		Группа 1
+																		Выберите группу
 																	</option>
-																	<option
-																		value='group2'
-																		className='!bg-[#F2F3F4]'
-																	>
-																		Группа 2
-																	</option>
+																	{groups.map(group => (
+																		<option
+																			key={group.group_id}
+																			value={group.group_name}
+																			className='!bg-[#F2F3F4]'
+																		>
+																			{group.group_name}
+																		</option>
+																	))}
 																</NativeSelect.Field>
 																<NativeSelect.Indicator />
 															</NativeSelect.Root>
@@ -795,6 +879,12 @@ function DevicesAndGroups() {
 																outlineWidth={1}
 																borderRadius={10}
 																fontWeight={500}
+																onChange={e =>
+																	setGroupData({
+																		...groupData,
+																		group_name: e.target.value,
+																	})
+																}
 															/>
 														</Box>
 													</Dialog.Body>
@@ -817,7 +907,7 @@ function DevicesAndGroups() {
 															}}
 															_focus={{ outline: 'none' }}
 															transition='all 0.2s ease-in-out'
-															/* onClick={handleCreateDevice} */
+															onClick={handleCreateGroup}
 														>
 															<FiCheck />
 															Подтвердить создание новой группы
@@ -833,7 +923,7 @@ function DevicesAndGroups() {
 					</HStack>
 				</Box>
 				{/* Основной контент */}
-				{activeTab.includes('groups') && <Groups />}
+				{activeTab.includes('groups') && <Groups key={groupsKey} />}
 				{activeTab.includes('devices') && <Devices key={devicesKey} />}
 			</Flex>
 		</Flex>

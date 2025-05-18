@@ -216,7 +216,7 @@ function Dashboard() {
 					flex='1'
 					bg='#F4F4F5'
 					paddingInline='5'
-					py={6}
+					py={4}
 					overflowY='auto'
 				>
 					{activeTab.includes('detailed') && <Detailed />}

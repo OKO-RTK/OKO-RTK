@@ -13,12 +13,13 @@ import {
 	Button,
 } from '@chakra-ui/react'
 import type { IconType } from 'react-icons'
-import { FiServer, FiGlobe, FiMonitor, FiX, FiCheck } from 'react-icons/fi'
+import { FiServer, FiGlobe, FiMonitor, FiX, FiCheck, FiTrash2 } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { toaster } from '@/components/ui/toaster'
+
+
 interface Device {
-	//информация об устройстве
 	device_id: string
 	device_name: string
 	ip_address: string
@@ -41,6 +42,13 @@ interface DeviceExtended {
 	user_id: string
 }
 
+interface Group {
+	group_id: string
+	group_name: string
+	group_created_at: string
+	num_of_devices: string
+}
+
 function Devices() {
 	const items = [
 		//массив для реализации выбора метода мониторинга
@@ -50,7 +58,10 @@ function Devices() {
 	]
 
 	const [devices, setDevices] = useState<Device[]>([])
+	const [groups, setGroups] = useState<Group[]>([])
 
+
+	
 	const [extendedData, setExtendedData] = useState<DeviceExtended>({
 		device_group: '',
 		device_name: '',
@@ -64,6 +75,38 @@ function Devices() {
 		type_check: [],
 		user_id: '',
 	})
+
+
+	const fetchGroups = async () => {
+			const token = localStorage.getItem('token')
+			try {
+				const response = await axios.get<{ groups: Group[] }>(
+					'http://130.193.56.188:3000/group',
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+							'Content-Type': 'application/json',
+						},
+					}
+				)
+				const groupsArr = response.data.groups
+				if (Array.isArray(groupsArr)) {
+					setGroups(groupsArr)
+				} 
+				else{
+					toaster.error({
+						title: 'Ошибка при формировании массива групп',
+						duration: 5000,
+					})
+				}
+			} catch (err) {
+				toaster.error({
+					title: 'Ошибка при формировании массива групп ',
+					description: 'Ошибка при загрузке списка групп ' + err,
+					duration: 5000,
+				})
+			}
+		}
 
 	const fetchDevices = async () => {
 		const token = localStorage.getItem('token')
@@ -156,7 +199,7 @@ function Devices() {
 			fetchDevices()
 		}
 		catch(err){
-			toaster.success({
+			toaster.error({
 				title: 'Ошибка при удалении устройства ',
 				description: 'Ошибка ' + err,
 				duration: 5000,
@@ -191,7 +234,7 @@ function Devices() {
 
 			/* alert('Тип проверки - ' + extendedData.type_check) */
 		} catch (err) {
-			toaster.success({
+			toaster.error({
 				title: 'Ошибка при загрузке устройства ',
 				description: 'Ошибка ' + err,
 				duration: 5000,
@@ -301,6 +344,7 @@ function Devices() {
 											justifyContent='space-between'
 											borderWidth='2px'
 											borderColor={getColorByStatus(device.status)}
+											onClick={fetchGroups}
 										>
 											<HStack>
 												<Icon size={28} color='black' />
@@ -562,17 +606,21 @@ function Devices() {
 																	}
 																>
 																	<option
-																		value='group1'
-																		className='!bg-[#F2F3F4]'
+																		value=''
+																		hidden
+																		className='!bg-[#F2F3F4] text-gray-500'
 																	>
-																		Группа 1
+																		Выберите группу
 																	</option>
-																	<option
-																		value='group2'
-																		className='!bg-[#F2F3F4]'
-																	>
-																		Группа 2
-																	</option>
+																	{groups.map(group => (
+																		<option
+																			key={group.group_id}
+																			value={group.group_name}
+																			className='!bg-[#F2F3F4]'
+																		>
+																			{group.group_name}
+																		</option>
+																	))}
 																</NativeSelect.Field>
 																<NativeSelect.Indicator />
 															</NativeSelect.Root>
