@@ -16,6 +16,7 @@ def get_device_by_name(device_name):
     device = DashboardService.get_device_by_name(identity,device_name)
     return jsonify(device), 200
 
+
 @dashboard_bp.route('/dashboard/export/<string:device_name>/<string:filename>', methods=['GET'])
 @jwt_required()
 def export_device_logs(device_name,filename):

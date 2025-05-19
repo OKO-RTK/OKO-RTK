@@ -36,7 +36,7 @@ def edit_user():
         token = UserService.update_user_token(user)
         decoded = decode_token(token)
         identity = decoded['sub']
-        alert = AlertService.add_alert("/user/edit",identity,user.to_dict()['email'])
+        AlertService.add_alert("/user/edit",identity,user.to_dict()['email'])
         return jsonify({
             "user": user.to_dict(), 
             "access_token": token  

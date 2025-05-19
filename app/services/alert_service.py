@@ -10,37 +10,37 @@ from datetime import datetime , timedelta
 
 class AlertService:
     @staticmethod
-    def type_salert(type_alert,data):
+    def type_alert(alert,data):
         ALERT_MESSAGES = {
-    "/user/edit": "Измненение данных пользователя",
+        "/user/edit": "Измненение данных пользователя",
 
-    "/group/add": "Добавлена группа",
-    "/group/edit": "Группа изменена",
-    "/group/delete": "Группа удалена",
+        "/group/add": "Добавлена группа",
+        "/group/edit": "Группа изменена",
+        "/group/delete": "Группа удалена",
 
-    "/device/add": "Добавлено устройство",
-    "/device/edit": "Устройство изменено",
-    "/device/delete": "Удалено устройство",
-    "/device/add_to_group": "Устройство добавлено в группу",
-    }
-
-    if type_alert in ALERT_MESSAGES:
-        data = {
-            "message": ALERT_MESSAGES[type_alert],
-            "message_discript": data,
-            "created_at": datetime.utcnow() + timedelta(hours=3),
+        "/device/add": "Добавлено устройство",
+        "/device/edit": "Устройство изменено",
+        "/device/delete": "Удалено устройство",
+        "/device/add_to_group": "Устройство добавлено в группу",
         }
-        return data
-    return None
+
+        if alert in ALERT_MESSAGES:
+            data = {
+                "message": ALERT_MESSAGES[alert],
+                "message_discript": data,
+                "created_at": datetime.utcnow() + timedelta(hours=3),
+            }
+            return data
+        return None
 
     @staticmethod
-    def add_alert(type_alert,identity,data):
+    def AlertServiceadd_alert(type_alert,identity,data):
         user = AuthService.accept_user(identity)
         if not user:
             return {"message": "Ошибка - Пользователь не найден"}, 401
 
-        data = type_salert(type_alert,data)
-        if data != None
+        data = AlertService.type_alert(type_alert,data)
+        if data != None:
             alert = Alert(
                 message=data.get('message'),
                 message_discript=data.get('message_discript'),

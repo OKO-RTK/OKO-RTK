@@ -18,6 +18,7 @@ def register():
     current_app.logger.info(f"Пользователь {data['login']} успешно зарегистрирован")
     return jsonify({"message": "Вы успешно зарегистрированы"}), 201
 
+
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()

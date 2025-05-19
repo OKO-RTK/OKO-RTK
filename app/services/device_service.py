@@ -81,7 +81,7 @@ class DeviceService:
         device.device_type = device_data.get('device_type')
         device.device_login = device_data.get("device_login")
         if device_data.get('device_group') != None and device_data.get('device_group') != device.device_group :
-            AlertService.add_alert("/group/delete'",identity,group_name)
+            AlertService.add_alert("/device/add_to_group",identity,device_data.get('device_group'))
             device.device_group = device_data.get('device_group')
         if device_data.get("serial_number") !=  device.serial_number:
             device.serial_number = device_data.get("serial_number")
@@ -129,11 +129,16 @@ class DeviceService:
             port_check_list = device_data['port']
             port_check_json = json.dumps(port_check_list)
         if device_data.get('device_group') != None:
-            AlertService.add_alert("/group/delete'",identity,group_name)
+            AlertService.add_alert("/device/add_to_group",identity,device_data.get('device_group'))
+        
+        new_name = device_data.get('device_name')
+        if new_name:
+            existing_device = Device.query.filter_by(user_id=user.id, name=new_name).first()
+            if existing_device and existing_device.id != device.id:
+                return {"msg": "Ошибка - Устройство с таким именем уже существует"}
 
-        a = device_data.get('device_password') 
         device = Device(
-            name = device_data.get('device_name'),
+            name = new_name,
             ip_address = device_data.get('ip_address'),
             serial_number = device_data.get('serial_number'),
             device_type = device_data.get('device_type'),

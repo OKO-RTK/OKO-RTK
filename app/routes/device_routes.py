@@ -34,7 +34,7 @@ def get_device_id(device_id):
 def delete_device_id(device_id):
     identity = get_jwt_identity()
     message = DeviceService.delete_device_by_id(identity,device_id)
-    alert = AlertService.add_alert("/device/delete",identity,message.name)
+    AlertService.add_alert("/device/delete",identity,message.name)
     return jsonify({"message": message}), 200
 
 
@@ -47,7 +47,7 @@ def add_device():
         if not data:
             return jsonify({"message": "Missing login or password"}), 400
         device = DeviceService.add_device(data, identity)
-        alert = AlertService.add_alert("/device/add",identity,device.name)
+        AlertService.add_alert("/device/add",identity,device.name)
         return jsonify({"message": "Устройство добавлено","device":device.name}), 201
     
     except Exception as e:
@@ -62,7 +62,7 @@ def edit_device_id(device_id):
         data = request.get_json()
         identity = get_jwt_identity()
         device = DeviceService.edit_device_by_id(identity, data,device_id)
-        alert = AlertService.add_alert("/device/edit",identity,device.name)
+        AlertService.add_alert("/device/edit",identity,device.name)
         return jsonify({"device": device.to_dict()}), 200
     except Exception as e:
         current_app.logger.error(f"Ошибка при добавлении устройства: {e}")
