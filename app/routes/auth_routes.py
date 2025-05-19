@@ -1,28 +1,33 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from app.services.auth_service import AuthService
+import logging
 
 auth_bp = Blueprint('auth', __name__)
+logger = logging.getLogger("flask")
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    if not data or not data.get('username') or not data.get('password'):
-        return jsonify({"msg": "Missing username or password"}), 400
-
-    user, error = AuthService.register_user(data['username'], data['password'])
+    if not data or not data.get('login') or not data.get('password'):
+        return jsonify({"message": "Отсутсвует логин или пароль"}), 400
+    user, error = AuthService.register_user(data['login'], data['password'])
+    
     if error:
-        return jsonify({"msg": error}), 409
+        return jsonify({"message": error}), 409
+    current_app.logger.info(f"Пользователь {data['login']} успешно зарегистрирован")
+    return jsonify({"message": "Вы успешно зарегистрированы"}), 201
 
-    return jsonify({"msg": "User created successfully"}), 201
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    if not data or not data.get('username') or not data.get('password'):
-        return jsonify({"msg": "Missing username or password"}), 400
+    if not data or not data.get('login') or not data.get('password'):
+        return jsonify({"message": "Отсутсвует логин или пароль"}), 400
 
-    token = AuthService.authenticate_user(data['username'], data['password'])
+    token, error = AuthService.authenticate_user(data['login'], data['password'])
+    if error:
+        return jsonify({"message": error}), 409
     if token:
+        current_app.logger.info(f"Пользователь {data['login']} успешно вошел")
         return jsonify(access_token=token), 200
 
-    return jsonify({"msg": "Bad credentials"}), 401
