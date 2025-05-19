@@ -13,6 +13,7 @@
 		"react-is": "^19.0.0-rc-69d4b800-20241021"
 	},
 	"dependencies": {
+		"@chakra-ui/charts": "^3.19.1",
 		"@chakra-ui/react": "^3.17.0",
 		"@emotion/react": "^11.14.0",
 		"@emotion/styled": "^11.14.0",

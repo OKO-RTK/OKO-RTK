@@ -76,6 +76,20 @@ function Devices() {
 		user_id: '',
 	})
 
+	const getColorByStatus = (status: string): string => {
+		switch (status) {
+			case 'Работает':
+				return '#0ACB5B'
+			case 'Предупреждение':
+				return '#FDA610'
+			case 'Критическое состояние':
+				return '#FF2626'
+			case 'Недоступно':
+				return '#797E8B'
+			default:
+				return 'transparent'
+		}
+	}
 
 	const fetchGroups = async () => {
 			const token = localStorage.getItem('token')
@@ -248,21 +262,6 @@ function Devices() {
 		}
 	}, [])
 
-	const getColorByStatus = (status: string): string => {
-		//функция для задания цвета границы в зависимости от статуса устройства
-		switch (status) {
-			case 'Работает':
-				return '#0ACB5B'
-			case 'Предупреждение':
-				return '#FDA610'
-			case 'Критическое состояние':
-				return '#FF2626'
-			case 'Недоступно':
-				return '#797E8B'
-			default:
-				return 'transparent'
-		}
-	}
 
 	const getIconByType = (device_type: string): IconType => {
 		//функция для задания цвета границы в зависимости от статуса устройства
@@ -637,7 +636,7 @@ function Devices() {
 															</Text>
 															<Input
 																placeholder={
-																	'Целое число, интервал проверки в минутах'
+																	'Целое число, интервал проверки в миллисекундах'
 																}
 																borderColor={'transparent'}
 																bg='#F2F3F4'

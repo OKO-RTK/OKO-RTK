@@ -113,7 +113,7 @@ function Detailed() {
 							px='2'
 						>
 							<Text fontSize='20px'>Основные метрики</Text>
-							<VStack fontSize='16px' fontWeight='400' px='1' spaceY={-0.5}>
+							<VStack fontSize='16px' fontWeight='400' px='1' spaceY={-1.5}>
 								<Flex w='full' justifyContent='space-between'>
 									<Text>Ping</Text>
 									<Text>63ms</Text>
@@ -174,6 +174,107 @@ function Detailed() {
 				</HStack>
 			</VStack>
 		</Box>
+		//		<Box w='full' fontFamily='RostelecomBasis'>
+		//			<Grid templateColumns='repeat(12, 1fr)' gap={3} h='full'>
+		//				{/* Левая вертикальная колонка (1/12 ширины, растягивается) */}
+		//				<GridItem
+		//					colSpan={3}
+		//					rowSpan={1}
+		//					/* border={'1px solid #7700FF'} */
+		//					display='flex'
+		//					flexDirection='column'
+		//					gap={3}
+		//				>
+		//					<Box
+		//						bg='white'
+		//						borderRadius='10px'
+		//						h='45%'
+		//						w='280px'
+		//						minH='50px'
+		//						boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
+		//						p='2'
+		//					>
+		//						<Flex justifyContent='space-between' alignItems='center'>
+		//							<Text color='black' fontWeight='500' fontSize='20px'>
+		//								Текущий статус
+		//							</Text>
+		//							<Text color='#666666' fontWeight='500' fontSize='12px' mt='1'>
+		//								14:14 - 03.05.2025
+		//							</Text>
+		//						</Flex>
+		//
+		//						<Flex justifyContent='center'>
+		//							<Text color='#0ACB5B' fontWeight='500' fontSize='20px'>
+		//								Работает
+		//							</Text>
+		//						</Flex>
+		//					</Box>
+		//					<Box
+		//						bg='white'
+		//						w='280px'
+		//						borderRadius='10px'
+		//						h='55%'
+		//						minH='60px'
+		//						boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
+		//					/>
+		//				</GridItem>
+		//
+		//				{/* Верхний ряд, 2 блока */}
+		//				<GridItem colSpan={5} /* border={'1px solid #7700FF'} */>
+		//					<Box
+		//						bg='white'
+		//						borderRadius='10px'
+		//						h='200px'
+		//						boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
+		//					/>
+		//				</GridItem>
+		//				<GridItem colSpan={4} /* border={'1px solid #7700FF'} */>
+		//					<Box
+		//						bg='white'
+		//						borderRadius='10px'
+		//						h='200px'
+		//						boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
+		//					/>
+		//				</GridItem>
+		//
+		//				{/* Средний большой блок */}
+		//				<GridItem colSpan={8} /* border={'1px solid #7700FF'} */>
+		//					<Box
+		//						bg='white'
+		//						borderRadius='10px'
+		//						h='280px'
+		//						boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
+		//					/>
+		//				</GridItem>
+		//				<GridItem colSpan={4} /*  border={'1px solid #7700FF'} */>
+		//					<Box
+		//						bg='white'
+		//						borderRadius='10px'
+		//						h='280px'
+		//						boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
+		//					/>
+		//				</GridItem>
+		//
+		//				<GridItem colSpan={4} /* border={'1px solid #7700FF'} */>
+		//					<Box
+		//						bg='white'
+		//						borderRadius='10px'
+		//            w='337px'
+		//						h='320px'
+		//						boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
+		//					/>
+		//				</GridItem>
+		//
+		//				<GridItem colSpan={8} /* border={'1px solid #7700FF'} */>
+		//					<Box
+		//						bg='white'
+		//						borderRadius='10px'
+		//						h='320px'
+		//						boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
+		//					/>
+		//				</GridItem>
+		//			</Grid>
+		//		</Box>
 	)
 }
 

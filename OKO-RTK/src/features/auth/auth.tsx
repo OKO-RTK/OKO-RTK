@@ -2,7 +2,7 @@ import { Box, Button, Input, Text, VStack, HStack } from '@chakra-ui/react'
 import { useState } from 'react'
 import axios, { AxiosError } from 'axios'
 import {useNavigate} from 'react-router-dom'
-import { toaster } from '@/components/ui/toaster'
+import { Toaster, toaster } from '@/components/ui/toaster'
 
 
 const CustomTabs = () => {
@@ -34,8 +34,6 @@ const CustomTabs = () => {
 					'Content-Type': 'application/json',
 				},
 			})
-
-			console.log('Login success:', response.data)
 			toaster.success({
 				title: 'Ваш токен: ' + response.data.access_token,
 				duration: 5000,
@@ -46,11 +44,10 @@ const CustomTabs = () => {
 			const err = error as AxiosError<{ message?: string }>
 
 			if (err.response) {
-				alert(
-					`Ошибка входа: ${
-						err.response.data?.message || err.response.statusText
-					}`
-				)
+				toaster.error({
+					title: 'Ошибка входа: ' + err,
+					duration: 5000,
+				})
 			} else {
 				alert('Ошибка входа: Сервер недоступен или нет ответа')
 			}
@@ -119,6 +116,7 @@ const CustomTabs = () => {
 			fontFamily='RostelecomBasis'
 			borderRadius={15}
 		>
+			<Toaster/>
 			<Text color='black' fontSize='34px' fontWeight='700' mb={-4}>
 				{isRegistering ? 'Регистрация' : 'Авторизация'}
 			</Text>

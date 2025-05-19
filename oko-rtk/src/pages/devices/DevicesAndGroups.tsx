@@ -593,7 +593,7 @@ function DevicesAndGroups() {
 															</Text>
 															<Input
 																placeholder={
-																	'Целое число, интервал проверки в минутах'
+																	'Целое число, интервал проверки в миллисекундах'
 																}
 																borderColor={'transparent'}
 																bg='#F2F3F4'
@@ -754,7 +754,7 @@ function DevicesAndGroups() {
 																	onChange={e =>
 																		setDeviceData(prev => ({
 																			...prev,
-																			port_number: e.target.value,
+																			port: e.target.value,
 																		}))
 																	}
 																/>

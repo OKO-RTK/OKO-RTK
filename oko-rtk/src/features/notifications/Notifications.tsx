@@ -14,6 +14,7 @@ interface Notification {
 	message: string
 	message_discript: string
 }
+import { toaster } from '@/components/ui/toaster'
 
 function Notifications() {
 	
@@ -34,9 +35,13 @@ function Notifications() {
 							},
 						}
 					)
-					setNotifications(response.data.slice(0, 20))
+					setNotifications(response.data.slice(0, 30))
 				} catch (err) {
-					/* alert('Ошибка при загрузке уведомлений ' + err) */
+					toaster.error({
+						title: 'Ошибка при формировании загрузке уведомлений ',
+						description: 'Ошибка ' + err,
+						duration: 5000,
+					})
 				}
 			}
 			fetchNotifications()
