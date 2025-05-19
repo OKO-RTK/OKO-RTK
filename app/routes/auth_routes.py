@@ -1,5 +1,6 @@
-from flask import Blueprint, request, jsonify, current_app
 from app.services.auth_service import AuthService
+
+from flask import Blueprint, request, jsonify, current_app
 import logging
 
 auth_bp = Blueprint('auth', __name__)
@@ -16,7 +17,6 @@ def register():
         return jsonify({"message": error}), 409
     current_app.logger.info(f"Пользователь {data['login']} успешно зарегистрирован")
     return jsonify({"message": "Вы успешно зарегистрированы"}), 201
-
 
 @auth_bp.route('/login', methods=['POST'])
 def login():

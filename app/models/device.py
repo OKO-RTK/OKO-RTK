@@ -1,6 +1,7 @@
-from .. import db
 from cryptography.fernet import Fernet
 from flask import current_app
+from .. import db
+
 
 class Device(db.Model):
     __tablename__ = 'devices'
@@ -18,7 +19,6 @@ class Device(db.Model):
     port = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-
     def set_password(self, password: str):
         fernet = current_app.config["FERNET"]
         self.device_password = fernet.encrypt(password.encode()).decode() 
@@ -27,8 +27,7 @@ class Device(db.Model):
         if self.device_password != None:
             fernet = current_app.config["FERNET"]
             return fernet.decrypt(self.device_password.encode()).decode()
-    
-
+            
     def to_dict(self):
         return {
             'device_name': self.name,

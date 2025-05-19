@@ -1,6 +1,7 @@
 from ping3 import ping
 import statistics
 
+
 class PingCheck:
     @staticmethod
     def diagnostics(host: str, count: int, timeout: int = 2):
@@ -17,11 +18,11 @@ class PingCheck:
 
         if latencies and all(latency == 0 for latency in latencies):
             return  {
-            "packet_loss": None,                # Процент потерь
-            "ping_avg": None,                   # Средняя задержка
-            "ping_min": None,                   # Минимальная задержка
-            "ping_max": None,                   # Максимальная задержка
-            "ping_status": "Недоступно"         # Статус
+            "packet_loss": None,                
+            "ping_avg": None,                   
+            "ping_min": None,                  
+            "ping_max": None,                   
+            "ping_status": "Недоступно"         
         }
 
         if success > 6:

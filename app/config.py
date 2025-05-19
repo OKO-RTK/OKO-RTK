@@ -1,8 +1,8 @@
-from dotenv import load_dotenv
-import os
-import logging.config
-from datetime import timedelta
 from cryptography.fernet import Fernet
+from dotenv import load_dotenv
+from datetime import timedelta
+import logging.config
+import os
 
 load_dotenv()
 
@@ -12,7 +12,6 @@ class Config:
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES')))
     FERNET = Fernet(os.getenv('ENCRYPTION_KEY'))
-
 
     LOG_DIR = 'log'
     if not os.path.exists(LOG_DIR):
@@ -53,7 +52,6 @@ class Config:
         },
     },
 }
-
 
     @staticmethod
     def init_app(app):

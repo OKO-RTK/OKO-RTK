@@ -1,14 +1,19 @@
-from app.models.device import Device
-from app.models.device_status import DeviceStatus
-from app.models.monitor_log import MonitorLog
-from app.models.user import User
 from app.services.monitoring_services.ping_check_service import PingCheck
 from app.services.monitoring_services.port_check_service import PortCheck
 from app.services.monitoring_services.snmp_check_service import SNMPCheck
+
+from app.models.device_status import DeviceStatus
+from app.models.monitor_log import MonitorLog
+from app.models.device import Device
+from app.models.user import User
+
 from app import db
+
 from datetime import datetime, timedelta
 import json
 import logging
+
+
 logger = logging.getLogger("flask")
 
 class MonitorDevice:
@@ -57,8 +62,6 @@ class MonitorDevice:
         if log:
             db.session.add(log)
             db.session.commit()
-
-
 
     @staticmethod
     def check_device(device_id):

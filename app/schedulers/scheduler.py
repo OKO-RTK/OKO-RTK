@@ -1,7 +1,11 @@
-from apscheduler.schedulers.background import BackgroundScheduler
-from app.models.device import Device
 from app.services.monitoring_services.monitor_service import MonitorDevice
 from app.services.dashboard_service import DashboardService
+
+from app.models.device import Device
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
 scheduler = BackgroundScheduler()
 
 def start_scheduler(app):
@@ -11,7 +15,6 @@ def start_scheduler(app):
                 MonitorDevice.check_device(device.id)
                 DashboardService.update_logs_dashboard(device.user_id,device.name)
         job_id = f"check_device_{device.id}"
-        
         
         if not scheduler.get_job(job_id):
             scheduler.add_job(
@@ -29,12 +32,10 @@ def start_scheduler(app):
             for device in devices:
                 schedule_device(device)  
 
-
     with app.app_context():
         devices = Device.query.all()
         for device in devices:
             schedule_device(device)
-
 
     scheduler.add_job(
         check_new_devices,

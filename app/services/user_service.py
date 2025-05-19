@@ -1,6 +1,9 @@
-from app.models.user import User
 from app.services.auth_service import AuthService
+
+from app.models.user import User
+
 from flask_jwt_extended import create_access_token
+
 from app import db
 
 class UserService:

@@ -1,5 +1,6 @@
-from .. import db
 from datetime import datetime
+from .. import db
+
 
 class Alert(db.Model):
     __tablename__ = 'alerts'
@@ -12,3 +13,10 @@ class Alert(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            "message": self.message,
+            "message_discript": self.message_discript,
+            "created_at": self.created_at.isoformat(),
+        }

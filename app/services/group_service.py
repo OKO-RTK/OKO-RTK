@@ -1,19 +1,23 @@
-from app.models.device import Device
-from app.models.device_status import DeviceStatus
 from app.services.auth_service import AuthService
+
+from app.models.device_status import DeviceStatus
 from app.models.monitor_log import MonitorLog
+from app.models.device import Device
 from app.models.group import Group
 from app.models.user import User
-from app import db
+
 from sqlalchemy import func
+
+from app import db
+
 from datetime import datetime, timedelta
 import json
 import logging
 
+
 logger = logging.getLogger("flask")
 
 class GroupService:
-
     @staticmethod
     def add_group(identity,data):
         user = AuthService.accept_user(identity)
@@ -33,7 +37,6 @@ class GroupService:
 
         return group, 201
 
-
     @staticmethod
     def get_group_by_name(identity, group_name):
         user = AuthService.accept_user(identity)
@@ -51,7 +54,6 @@ class GroupService:
         result_serialized = [device_status.to_dict() for device_status in result]
 
         return result_serialized, 200
-
 
     @staticmethod
     def get_group(identity):
@@ -116,8 +118,6 @@ class GroupService:
             import traceback
             traceback.print_exc()
             return {"msg": "Ошибка при удалении", "error": str(e)}, 500
-
-
 
     @staticmethod
     def edit_group_by_name(identity,group_name,data):

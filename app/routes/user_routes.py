@@ -1,9 +1,11 @@
-from flask import Blueprint, request, jsonify, current_app
+from app.services.alert_service import AlertService
 from app.services.user_service import UserService
 from app.services.auth_service import AuthService
-from app.services.alert_service import AlertService
+
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity, decode_token 
 import logging
+
 
 user_bp = Blueprint('user', __name__)
 logger = logging.getLogger("flask")
@@ -22,7 +24,6 @@ def get_user():
     except Exception as e:
         current_app.logger.error(f"Ошибка при отображении группs: {e}")
         return jsonify({"error": "Внутренняя ошибка сервера"}), 500
-
 
 
 @user_bp.route('/user/edit', methods=['PUT'])

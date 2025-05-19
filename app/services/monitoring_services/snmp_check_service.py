@@ -1,7 +1,8 @@
+from flask import current_app
+
 import paramiko
 import re
 import logging
-from flask import current_app
 
 logger = logging.getLogger("flask")
 
@@ -12,25 +13,24 @@ class SNMPCheck:
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(hostname=host, username=username, password=password)
 
-        # CPU load
+        # Нагрузка CPU
         stdin, stdout, stderr = ssh.exec_command("top -bn1 | grep 'Cpu(s)' | awk '{print $2 + $4}'")
         output = stdout.read().decode().strip().replace(',', '.') 
         cpu_load = float(output) 
 
-        # CPU Model
+        # модель CPU
         stdin, stdout, stderr = ssh.exec_command("cat /proc/cpuinfo | grep 'model name' | uniq")
         cpu_model = stdout.read().decode().strip().split(":")[-1].strip()
 
-        # CPU Cores
+        # ядра CPU
         stdin, stdout, stderr = ssh.exec_command("nproc")
         cpu_cores = int(stdout.read().decode().strip())
 
-        # CPU Frequency
+        # частота CPU
         stdin, stdout, stderr = ssh.exec_command("cat /proc/cpuinfo | grep 'cpu MHz' | uniq")
-        cpu_freq = stdout.read().decode().strip().split(":")[-1].strip() + " MHz"
+        cpu_freq = stdout.read().decode().strip().split(":")[-1].strip() + "MHz"
 
-
-        # Memory
+        # Оперативная память
         stdin, stdout, stderr = ssh.exec_command("free -m | grep Mem")
         mem_info = stdout.read().decode().strip().split()
         total_mem = float(mem_info[1])         
@@ -38,7 +38,7 @@ class SNMPCheck:
         free_mem = float(mem_info[3])          
         available_mem = float(mem_info[6])     
 
-        # Disk
+        # Диск
         stdin, stdout, stderr = ssh.exec_command("df -m / | tail -1")
         disk_info = stdout.read().decode().strip().split()
         total_disk = float(disk_info[1])       
@@ -46,7 +46,7 @@ class SNMPCheck:
         available_disk = float(disk_info[3])   
         disk_usage_percent = float(disk_info[4].rstrip('%')) 
 
-        # CPU Temperature 
+        # температура CPU
         stdin, stdout, stderr = ssh.exec_command("cat /sys/class/thermal/thermal_zone0/temp")
         temp_raw = stdout.read().decode().strip()
         current_app.logger.info(f"Пароль сервер {temp_raw} ")
@@ -56,7 +56,7 @@ class SNMPCheck:
         except:
             pass
 
-        # Network (в байтах)
+        # Пропускная способность (в байтах)
         stdin, stdout, stderr = ssh.exec_command("cat /proc/net/dev")
         net_data = stdout.read().decode()
         rx_bytes = 0

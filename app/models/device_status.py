@@ -1,6 +1,7 @@
-from .. import db
-from datetime import datetime
 from sqlalchemy.dialects.mysql import JSON
+from datetime import datetime
+from .. import db
+
 
 class DeviceStatus(db.Model):
     __tablename__ = 'device_status'

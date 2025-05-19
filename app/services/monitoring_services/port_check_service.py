@@ -1,5 +1,6 @@
 import socket
 
+
 class PortCheck: 
     @staticmethod
     def check_port(host, port, timeout=3):

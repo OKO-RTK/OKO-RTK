@@ -1,13 +1,16 @@
-from flask import Blueprint, request, jsonify, current_app
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from app import db
-from app.models.device import Device
-from app.services.alert_service import AlertService
 from app.services.device_service import DeviceService
+from app.services.alert_service import AlertService
+
+from app.models.device import Device
 from app.models.user import User
 
-device_bp = Blueprint('device', __name__)
+from flask import Blueprint, request, jsonify, current_app
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from app import db
+
+
+device_bp = Blueprint('device', __name__)
 
 @device_bp.route('/device', methods=['GET'])
 @jwt_required()
@@ -31,10 +34,8 @@ def get_device_id(device_id):
 def delete_device_id(device_id):
     identity = get_jwt_identity()
     message = DeviceService.delete_device_by_id(identity,device_id)
+    alert = AlertService.add_alert("/device/delete",identity,message.name)
     return jsonify({"message": message}), 200
-
-
-
 
 
 @device_bp.route('/device/add', methods=['POST'])
@@ -61,6 +62,7 @@ def edit_device_id(device_id):
         data = request.get_json()
         identity = get_jwt_identity()
         device = DeviceService.edit_device_by_id(identity, data,device_id)
+        alert = AlertService.add_alert("/device/edit",identity,device.name)
         return jsonify({"device": device.to_dict()}), 200
     except Exception as e:
         current_app.logger.error(f"Ошибка при добавлении устройства: {e}")

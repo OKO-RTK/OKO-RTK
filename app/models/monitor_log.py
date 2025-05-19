@@ -1,6 +1,6 @@
-from .. import db
-from datetime import datetime
 from sqlalchemy.dialects.mysql import JSON
+from datetime import datetime
+from .. import db
 
 class MonitorLog(db.Model):
     __tablename__ = 'monitor_log'

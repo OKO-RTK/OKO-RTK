@@ -1,21 +1,27 @@
-from app.models.device import Device
+from app.services.monitoring_services.monitor_service import MonitorDevice
+from app.services.auth_service import AuthService
+
 from app.models.device_status import DeviceStatus
 from app.models.monitor_log import MonitorLog
+from app.models.device import Device
 from app.models.alert import Alert
-from app.services.auth_service import AuthService
-from app.services.monitoring_services.monitor_service import MonitorDevice
 from app.models.user import User
-from app import db
+
 from sqlalchemy import func
 from sqlalchemy.dialects.mysql import insert
 from sqlalchemy import desc
-from datetime import datetime
+
+from flask import send_file
+
+from app import db
+
 import json
 import logging
 from flask import current_app
 import io
 import csv
-from flask import send_file
+from datetime import datetime
+
 
 logger = logging.getLogger("flask")
 
@@ -26,16 +32,19 @@ class DashboardService:
         if not user:
             return {"msg": "Ошибка - Пользователь не найден"}
 
-        devices = MonitorLog.query.filter_by(device_name=name, user_id=user.id).all()
+        devices = MonitorLog.query.filter_by(device_name=name, user_id=user.id)\
+                                .order_by(MonitorLog.checked_at.desc())\
+                                .limit(50).all()
+
         if not devices:
             return None
 
-        latest_device = MonitorLog.query.filter_by(device_name=name, user_id=user.id)\
-                                        .order_by(MonitorLog.checked_at.desc())\
-                                        .first()
+        latest_device = devices[0]
+
         memory = None
-        if latest_device.memmory_used != None and latest_device.memmory_total != None:
-            memory = round(latest_device.memmory_used/latest_device.memmory_total*100,2)
+        if latest_device.memmory_used and latest_device.memmory_total:
+            memory = round(latest_device.memmory_used / latest_device.memmory_total * 100, 2)
+
         latest_fields = {
             'ping': latest_device.ping_average_response_time,
             'packet_loss': latest_device.ping_packet_loss,
@@ -47,34 +56,31 @@ class DashboardService:
             'memory_used': memory,
             'network_transmitted': latest_device.network_transmitted,
             'port': latest_device.port_status,
-            'time':latest_device.checked_at.isoformat(),
+            'time': latest_device.checked_at.isoformat(),
         }
 
-        structured_data = []
-        for d in devices:
-            structured_data.append({
-                "cpu": {
-                    "cpu_load": d.cpu_load,
-                    "time":d.checked_at.isoformat()
-                },
-                "status_update": {
-                    "status": d.ping_status,
-                    "time":d.checked_at.isoformat()
-                }
-            })
+        structured_data = [{
+            "cpu": {
+                "cpu_load": d.cpu_load,
+                "time": d.checked_at.isoformat()
+            },
+            "status_update": {
+                "status": d.ping_status,
+                "time": d.checked_at.isoformat()
+            }
+        } for d in devices]
+        structured_data.reverse()
 
-        alerts = Alert.query.filter_by(user_id=user.id, device_id=latest_device.device_id,is_monitoring=1)\
-                            .order_by(Alert.created_at.desc())\
-                            .all()
+        alerts = Alert.query.filter_by(user_id=user.id,device_id=latest_device.device_id,is_monitoring=1)\
+        .limit(100).all()
 
         alert_list = [{
             "message": a.message,
             "description": a.message_discript,
-            "time": a.created_at.isoformat()
+            "time": a.created_at
         } for a in alerts]
 
-        return {"chart": structured_data,"base_metrics": latest_fields, "alerts": alert_list}
-
+        return {"chart": structured_data,"base_metrics": latest_fields,"alerts": alert_list}
 
     @staticmethod
     def export_device_logs_to_csv(identity, name, file_name):
