@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.log
+
+# Виртуальное окружение
+venv/
+env/
+
+# Секреты и конфигурации
+.env
+*.secret
+*.key
+
+# IDE (например, VSCode, PyCharm)
+.vscode/
+.idea/
+
+# Базы данных и временные файлы
+*.sql
+*.db
+.DS_Store
