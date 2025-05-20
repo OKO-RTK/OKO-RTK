@@ -9,20 +9,30 @@ from app import db
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-@dashboard_bp.route('/dashboard/device/<string:device_name>', methods=['GET'])
+@dashboard_bp.route('/api/dashboard/device/<string:device_name>', methods=['GET'])
 @jwt_required()
 def get_device_by_name(device_name):
-    identity = get_jwt_identity()
-    device = DashboardService.get_device_by_name(identity,device_name)
-    return jsonify(device), 200
+    try:
+        identity = get_jwt_identity()
+        device = DashboardService.get_device_by_name(identity,device_name)
+        #if not device:
+        #    return jsonify({"error": "Данные не найдены"}), 404
+        return jsonify(device), 200
+    except:
+         return jsonify({"error": "Ошибка сервера"}), 500
 
 
-@dashboard_bp.route('/dashboard/export/<string:device_name>/<string:filename>', methods=['GET'])
+
+
+@dashboard_bp.route('/api/dashboard/export/<string:device_name>/<string:filename>', methods=['GET'])
 @jwt_required()
 def export_device_logs(device_name,filename):
-    identity = get_jwt_identity()
-    response = DashboardService.export_device_logs_to_csv(identity, device_name,filename)
-    if not response:
-        return jsonify({"msg": "Данные не найдены"}), 404
-    return response
+    try:
+        identity = get_jwt_identity()
+        response = DashboardService.export_device_logs_to_csv(identity, device_name,filename)
+        if not response:
+            return jsonify({"error": "Данные не найдены"}), 404
+        return response
+    except:
+         return jsonify({"error": "Ошибка сервера"}), 500
 

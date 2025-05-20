@@ -55,7 +55,6 @@ class DeviceService:
             db.session.delete(device)
             db.session.commit()
 
-            return device
         except Exception as e:
             db.session.rollback()
             return {"msg": "Ошибка при удалении", "error": str(e)}, 500
@@ -71,16 +70,11 @@ class DeviceService:
         if not device:
             return None
 
-        new_name = device_data.get('device_name')
-        if new_name:
-            existing_device = Device.query.filter_by(user_id=user.id, name=new_name).first()
-            if existing_device and existing_device.id != device.id:
-                return {"msg": "Ошибка - Устройство с таким именем уже существует"}
-            device.name = new_name
+        device.name = device_data.get('device_name')
         device.ip_address = device_data.get('ip_address')
         device.device_type = device_data.get('device_type')
         device.device_login = device_data.get("device_login")
-        if device_data.get('device_group') != None and device_data.get('device_group') != device.device_group :
+        if len(device_data.get('device_group')) != 0 and device_data.get('device_group') != device.device_group :
             AlertService.add_alert("/device/add_to_group",identity,device_data.get('device_group'))
             device.device_group = device_data.get('device_group')
         if device_data.get("serial_number") !=  device.serial_number:
@@ -119,23 +113,27 @@ class DeviceService:
     def add_device(device_data: dict,identity):
         user = AuthService.accept_user(identity)
         if not user:
-            return {"msg": "Ошибка - Пользователь не найден"}
+            return None, "пользователь не найден"
+
+        device = Device.query.filter_by(user_id=user.id).all()
 
         type_check_list = device_data['type_check'] 
+        if type_check_list is None:
+            return None, "Укажите тип мониторинга"
         type_check_json = json.dumps(type_check_list)
         if "port" not in device_data: 
             port_check_json = None
         if "port" in device_data:
             port_check_list = device_data['port']
             port_check_json = json.dumps(port_check_list)
-        if device_data.get('device_group') != None:
+        if len(device_data.get('device_group')) != 0:
             AlertService.add_alert("/device/add_to_group",identity,device_data.get('device_group'))
         
         new_name = device_data.get('device_name')
-        if new_name:
-            existing_device = Device.query.filter_by(user_id=user.id, name=new_name).first()
-            if existing_device and existing_device.id != device.id:
-                return {"msg": "Ошибка - Устройство с таким именем уже существует"}
+        if len(new_name) == 0:
+            return None, "Не указано имя устройства"
+        if device_data.get('ip_address') is None:
+            return None, "Укажите ip адрес уйстройства или домен"
 
         device = Device(
             name = new_name,
@@ -159,7 +157,7 @@ class DeviceService:
             device.device_password = device_data.get('device_password')
 
         MonitorDevice.check_device(device.id)
-        return device
+        return device, None
     
     @staticmethod
     def update_device_status_from_log(log):
@@ -210,7 +208,7 @@ class DeviceService:
     def update_device_statuses_by_user(identity):
         user = AuthService.accept_user(identity)
         if not user:
-            return {"msg": "Ошибка - Пользователь не найден"}
+            return None 
 
         subq = db.session.query(
             MonitorLog.device_id,

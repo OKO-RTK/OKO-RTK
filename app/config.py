@@ -9,9 +9,18 @@ load_dotenv()
 class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_size': 100,
+        'max_overflow': 20,
+        'pool_timeout': 30,
+        'pool_recycle': 1800
+    }
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES')))
     FERNET = Fernet(os.getenv('ENCRYPTION_KEY'))
+
+    CACHE_TYPE = 'simple'
+    CACHE_DEFAULT_TIMEOUT = 60
 
     LOG_DIR = 'log'
     if not os.path.exists(LOG_DIR):

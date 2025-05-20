@@ -10,7 +10,7 @@ import logging
 user_bp = Blueprint('user', __name__)
 logger = logging.getLogger("flask")
 
-@user_bp.route('/user', methods=['GET'])
+@user_bp.route('/api/user', methods=['GET'])
 @jwt_required()
 def get_user():
     identity = get_jwt_identity()
@@ -23,10 +23,10 @@ def get_user():
 
     except Exception as e:
         current_app.logger.error(f"Ошибка при отображении группs: {e}")
-        return jsonify({"error": "Внутренняя ошибка сервера"}), 500
+        return jsonify({"error": "Ошибка сервера"}), 500
 
 
-@user_bp.route('/user/edit', methods=['PUT'])
+@user_bp.route('/api/user/edit', methods=['PUT'])
 @jwt_required()
 def edit_user():
     identity = get_jwt_identity() 
@@ -41,13 +41,11 @@ def edit_user():
             "user": user.to_dict(), 
             "access_token": token  
         }), 200
-    except ValueError as e:
-        return jsonify({"msg": str(e)}), 400  
-    except Exception as e:
-        return jsonify({"msg": str(e)}), 500 
+    except:
+        return jsonify({"error": "Ошибка сервера"}), 500 
 
 
-@user_bp.route('/user/edit/email', methods=['PUT'])
+@user_bp.route('/api/user/edit/email', methods=['PUT'])
 @jwt_required()
 def edit_user_email():
     login = get_jwt_identity() 
@@ -63,4 +61,4 @@ def edit_user_email():
         else:
             return jsonify(user), status
     except Exception as e:
-        return jsonify({"msg": str(e)}), 500  
+        return jsonify({"error": "Ошибка сервера"}), 500  

@@ -7,12 +7,13 @@ from app.models.group import Group
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from app import cache
 from app import db
 
 
 group_bp = Blueprint('group', __name__)
 
-@group_bp.route('/group/add', methods=['POST'])
+@group_bp.route('/api/group/add', methods=['POST'])
 @jwt_required()
 def add_group():
     try:
@@ -30,11 +31,12 @@ def add_group():
 
     except Exception as e:
         current_app.logger.error(f"Ошибка при добавлении группы: {e}")
-        return jsonify({"error": "Внутренняя ошибка сервера"}), 500
+        return jsonify({"error": "Ошибка сервера"}), 500
 
 
-@group_bp.route('/group/<string:group_name>', methods=['GET'])
+@group_bp.route('/api/group/<string:group_name>', methods=['GET'])
 @jwt_required()
+@cache.cached(timeout=10, key_prefix=lambda: f"group:{get_jwt_identity()}:{request.view_args['group_name']}")
 def get_group_by_name(group_name):
     try:
         identity = get_jwt_identity()
@@ -46,10 +48,10 @@ def get_group_by_name(group_name):
 
     except Exception as e:
         current_app.logger.error(f"Ошибка при отображении группы: {e}")
-        return jsonify({"error": "Внутренняя ошибка сервера"}), 500
+        return jsonify({"error": "Ошибка сервера"}), 500
 
 
-@group_bp.route('/group/<string:group_name>/edit', methods=['PUT'])
+@group_bp.route('/api/group/<string:group_name>/edit', methods=['PUT'])
 @jwt_required()
 def edit_group_by_name(group_name):
     try:
@@ -62,10 +64,10 @@ def edit_group_by_name(group_name):
 
     except Exception as e:
         current_app.logger.error(f"Ошибка при отображении группы: {e}")
-        return jsonify({"error": "Внутренняя ошибка сервера"}), 500
+        return jsonify({"error": "Ошибка сервера"}), 500
 
 
-@group_bp.route('/group/<string:group_name>/delete', methods=['DELETE'])
+@group_bp.route('/api/group/<string:group_name>/delete', methods=['DELETE'])
 @jwt_required()
 def delete_group_by_name(group_name):
     try:
@@ -76,11 +78,12 @@ def delete_group_by_name(group_name):
 
     except Exception as e:
         current_app.logger.error(f"Ошибка при отображении группы: {e}")
-        return jsonify({"error": "Внутренняя ошибка сервера"}), 500
+        return jsonify({"error": "Ошибка сервера"}), 500
 
 
-@group_bp.route('/group', methods=['GET'])
+@group_bp.route('/api/group', methods=['GET'])
 @jwt_required()
+@cache.cached(timeout=10, key_prefix=lambda: f"groups_list:{get_jwt_identity()}")
 def get_group():
     try:
         identity = get_jwt_identity()
@@ -90,7 +93,7 @@ def get_group():
             return jsonify(groups), status
         return jsonify({"groups": groups})
 
-    except Exception as e:
+    except :
         current_app.logger.error(f"Ошибка при отображении группs: {e}")
-        return jsonify({"error": "Внутренняя ошибка сервера"}), 500
+        return jsonify({"error": "Ошибка сервера"}), 500
 

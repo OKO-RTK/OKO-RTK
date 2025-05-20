@@ -34,7 +34,7 @@ class AlertService:
         return None
 
     @staticmethod
-    def AlertServiceadd_alert(type_alert,identity,data):
+    def add_alert(type_alert,identity,data):
         user = AuthService.accept_user(identity)
         if not user:
             return {"message": "Ошибка - Пользователь не найден"}, 401
@@ -45,6 +45,7 @@ class AlertService:
                 message=data.get('message'),
                 message_discript=data.get('message_discript'),
                 created_at=data.get('created_at'),
+                is_monitoring = 0,
                 user_id=user.id,
             )
         
@@ -59,5 +60,5 @@ class AlertService:
         if not user:
             return {"message": "Ошибка - Пользователь не найден"}, 401
             
-        alerts = Alert.query.filter_by(user_id=user.id).order_by(Alert.created_at.desc()).all()
-        return [alert.to_dict(alert) for alert in alerts]
+        alerts = Alert.query.filter_by(user_id=user.id,is_monitoring = 0).order_by(Alert.created_at.desc()).all()
+        return [alert.to_dict() for alert in alerts]

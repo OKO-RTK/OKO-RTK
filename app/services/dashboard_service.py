@@ -30,14 +30,11 @@ class DashboardService:
     def get_device_by_name(identity, name):
         user = AuthService.accept_user(identity)
         if not user:
-            return {"msg": "Ошибка - Пользователь не найден"}
+            return None
 
         devices = MonitorLog.query.filter_by(device_name=name, user_id=user.id)\
                                 .order_by(MonitorLog.checked_at.desc())\
                                 .limit(50).all()
-
-        if not devices:
-            return None
 
         latest_device = devices[0]
 
@@ -67,12 +64,19 @@ class DashboardService:
             "status_update": {
                 "status": d.ping_status,
                 "time": d.checked_at.isoformat()
+            },
+            "chart_ping":{
+                "max": d.ping_max_response_time,
+                "avg":d.ping_average_response_time,
+                "min": d.ping_min_response_time,
+                "time": d.checked_at.isoformat(),
             }
         } for d in devices]
         structured_data.reverse()
 
         alerts = Alert.query.filter_by(user_id=user.id,device_id=latest_device.device_id,is_monitoring=1)\
         .limit(100).all()
+
 
         alert_list = [{
             "message": a.message,
@@ -84,38 +88,41 @@ class DashboardService:
 
     @staticmethod
     def export_device_logs_to_csv(identity, name, file_name):
-        user = AuthService.accept_user(identity)
-        if not user:
+        try:
+            user = AuthService.accept_user(identity)
+            if not user:
+                return None
+
+            devices = MonitorLog.query.filter_by(device_name=name, user_id=user.id).all()
+            if not devices:
+                return None
+
+            records_raw = [d.to_dict() for d in devices]
+
+            records = []
+            for record in records_raw:
+                cleaned = {k: ("Нет данных" if v is None else v) for k, v in record.items()}
+                records.append(cleaned)
+
+            fieldnames = list(records[0].keys())
+
+            output = io.StringIO()
+            output.write('\ufeff') 
+
+            writer = csv.DictWriter(output, fieldnames=fieldnames)
+            writer.writeheader()
+            for row in records:
+                writer.writerow(row)
+
+            output.seek(0)
+            return send_file(
+                io.BytesIO(output.getvalue().encode("utf-8")),
+                mimetype="text/csv",
+                as_attachment=True,
+                download_name=f"{file_name}.csv"
+            )
+        except:
             return None
-
-        devices = MonitorLog.query.filter_by(device_name=name, user_id=user.id).all()
-        if not devices:
-            return None
-
-        records_raw = [d.to_dict() for d in devices]
-
-        records = []
-        for record in records_raw:
-            cleaned = {k: ("Нет данных" if v is None else v) for k, v in record.items()}
-            records.append(cleaned)
-
-        fieldnames = list(records[0].keys())
-
-        output = io.StringIO()
-        output.write('\ufeff') 
-
-        writer = csv.DictWriter(output, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in records:
-            writer.writerow(row)
-
-        output.seek(0)
-        return send_file(
-            io.BytesIO(output.getvalue().encode("utf-8")),
-            mimetype="text/csv",
-            as_attachment=True,
-            download_name=f"{file_name}.csv"
-        )
 
     @staticmethod
     def update_logs_dashboard(userid, name):
@@ -171,12 +178,11 @@ class DashboardService:
             return None
 
 
+                
 
             
 
-        
+            
 
-        
-
-        
-        
+            
+            

@@ -7,13 +7,17 @@ import logging
 alert_bp = Blueprint('alert', __name__)
 logger = logging.getLogger("flask")
 
-@alert_bp.route('/alert', methods=['GET'])
+@alert_bp.route('/api/alert', methods=['GET'])
 @jwt_required()
 def get_alert():
     login = get_jwt_identity()
-    alerts = AlertService.get_alerts(login)
-    if alerts is None:
-        return jsonify({"msg": "User not found"}), 404
-    return jsonify(alerts), 200
+    try:
+        alerts = AlertService.get_alerts(login)
+        if alerts is None:
+            return jsonify({"error": "Пользователь не найден"}), 404
+        return jsonify(alerts), 200
+    except: 
+        return jsonify({"error": "Ошибка сервера"}), 500
+
 
 
