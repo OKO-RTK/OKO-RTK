@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react'
 
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../../api/axiosInstance'
 
 interface Alert {
 	id: number

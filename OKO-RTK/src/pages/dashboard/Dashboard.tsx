@@ -15,7 +15,7 @@ import { FiUpload, FiCheck, FiX } from 'react-icons/fi'
 import '../../index.css'
 import General from './General'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../../api/axiosInstance'
 import {
 	Cell,
 	Pie,

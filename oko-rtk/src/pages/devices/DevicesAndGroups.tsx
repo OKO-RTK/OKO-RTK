@@ -1,6 +1,7 @@
 import { FiPlus, FiCheck, FiX } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
-import axios, { AxiosError } from 'axios'
+import { AxiosError } from 'axios'
+import axios from '../../api/axiosInstance'
 import { Toaster, toaster } from '@/components/ui/toaster'
 import {
   Flex,

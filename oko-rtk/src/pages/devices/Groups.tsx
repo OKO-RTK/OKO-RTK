@@ -15,7 +15,7 @@ import {
 import type { IconType } from 'react-icons'
 import { FiServer, FiGlobe, FiMonitor, FiX, FiCheck,FiTrash2} from 'react-icons/fi'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../../api/axiosInstance'
 import { toaster } from '@/components/ui/toaster'
 
 interface Group {

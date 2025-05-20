@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { FiCheck, FiX, FiLogOut } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../../api/axiosInstance'
 import { NavLink } from 'react-router-dom'
 import { Toaster, toaster } from '@/components/ui/toaster'
 

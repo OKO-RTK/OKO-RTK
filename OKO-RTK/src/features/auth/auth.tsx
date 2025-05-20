@@ -1,6 +1,7 @@
 import { Box, Button, Input, Text, VStack, HStack } from '@chakra-ui/react'
 import { useState } from 'react'
-import axios, { AxiosError } from 'axios'
+import { AxiosError } from 'axios'
+import axios from '../../api/axiosInstance'
 import {useNavigate} from 'react-router-dom'
 import { Toaster, toaster } from '@/components/ui/toaster'
 
