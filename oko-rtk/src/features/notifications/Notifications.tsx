@@ -55,7 +55,7 @@ function Notifications() {
 	useEffect(() => {
 		let timer: NodeJS.Timeout
 		if (alerts.length === 0) {
-			timer = setTimeout(() => setShowSpinner(false), 10000)
+			timer = setTimeout(() => setShowSpinner(false), 6000)
 		} else {
 			setShowSpinner(true)
 		}

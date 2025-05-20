@@ -164,7 +164,7 @@ function Groups() {
   useEffect(() => {
 		let timer: NodeJS.Timeout
 		if (groups.length === 0) {
-			timer = setTimeout(() => setShowSpinner(false), 10000)
+			timer = setTimeout(() => setShowSpinner(false), 6000)
 		} else {
 			setShowSpinner(true)
 		}
