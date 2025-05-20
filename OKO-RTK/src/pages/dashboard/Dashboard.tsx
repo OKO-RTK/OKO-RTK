@@ -11,8 +11,12 @@ import {
 	Input,
 	NativeSelect,
 	VStack,
-	Select,
+	Stack,
 	createListCollection,
+	SkeletonText,
+	Skeleton,
+	SkeletonCircle,
+	Spinner,
 } from '@chakra-ui/react'
 import { FiUpload, FiCheck, FiX } from 'react-icons/fi'
 import '../../index.css'
@@ -53,6 +57,8 @@ interface Alert{
 
 function Dashboard() {
 
+	const [metricsLoading, setMetricsLoading] = useState(false)
+
 	const [activeTab, setActiveTab] = useState<'general' | 'detailed'>('detailed')
 
 	const [devices, setDevices] = useState<Device[]>([])
@@ -63,6 +69,13 @@ function Dashboard() {
 		file_name: ''
 	})
 
+	const statusMapping: Record<string, number> = {
+		'Недоступно': 0,
+		'Критическое состояние': 1,
+		'Предупреждение': 2,
+		'Работает': 3,
+	}
+
 	const [deviceData, setDeviceData] = useState({
 		device_id: '',
 		device_name: '',
@@ -71,27 +84,34 @@ function Dashboard() {
 	const [deviceMonitor, setDeviceMonitor] = useState<{
 		base_metrics: {
 			cpu_load: number | null
+			cpu_model: string | null
+			cpu_cores: string | null
+			cpu_freq: string | null
 			memory_used: number | null
 			network_transmitted: number | null
 			ping: number | null
 			status: string
 			time: string
 			port: string | null
-			cpu_model: string | null
-			cpu_cores: string | null
-			cpu_freq: string | null
 			packet_loss: string | null
 		}
 		chart: {
 			cpu: { cpu_load: number | null; time: string }
 			status_update: { status: string; time: string }
+			chart_ping: {
+				max: string | null
+				avg: string | null
+				min: string | null
+				time: string
+			}
 		}[]
 		portStats?: {
 			open: number
 			closed: number
 		}
-		statusChartData?:{Status: string, Time:string}[]
-		cpuChartData?: { CPU: number; month: string }[]
+		statusChartData?: { status: string; time: string }[]
+		cpuChartData?: { CPU: number; Time: string }[]
+		pingChartData?: { max: number; avg: number; min: number; time: string }[]
 	} | null>(null)
 
 
@@ -99,12 +119,15 @@ function Dashboard() {
 		const token = localStorage.getItem('token')
 		try{
 			const response = await axios.get(
-				'http://130.193.56.188:3000/dashboard/export/' + deviceName + '/' + filename,
+				'http://84.201.180.84:3000/api/dashboard/export/' +
+					deviceName +
+					'/' +
+					filename,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
-					responseType: 'blob', // важно для скачивания файлов
+					responseType: 'blob',
 				}
 			)
 			const blob = new Blob([response.data], { type: 'text/csv' })
@@ -122,7 +145,7 @@ function Dashboard() {
 		catch (err){
 			toaster.error({
 				title: 'Ошибка при загрузке отчета',
-				description: 'Ошибка ' + err,
+				description: '' + err,
 				duration: 5000,
 			})
 		}
@@ -132,7 +155,7 @@ function Dashboard() {
 		const token = localStorage.getItem('token')
 		try {
 			const response = await axios.get<{ devices: Device[] }>(
-				'http://130.193.56.188:3000/device',
+				'http://84.201.180.84:3000/api/device',
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -144,16 +167,11 @@ function Dashboard() {
 			if (Array.isArray(devicesArr)) {
 				setDevices(devicesArr.slice(0, 50))
 			} 
-			else{
-				toaster.error({
-					title: 'Ошибка при формировании массива устройств ',
-					duration: 5000,
-				})
-			}
+			
 		} catch (err) {
 			toaster.error({
 				title: 'Ошибка при формировании списка устройств ',
-				description: 'Ошибка ' + err,
+				description: '' + err,
 				duration: 5000,
 			})
 		}
@@ -162,10 +180,10 @@ function Dashboard() {
 	const fetchMetrics = async (name: string) => {
 
 		const token = localStorage.getItem('token')
-
+		setMetricsLoading(true)
 		try {
 			const response = await axios.get(
-				`http://130.193.56.188:3000/dashboard/device/` + name,
+				`http://84.201.180.84:3000/api/dashboard/device/` + name,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -191,19 +209,14 @@ function Dashboard() {
 				} catch (err) {
 					alert('Ошибка при разборе портов:' + err)
 				}
-			} else {
-				toaster.error({
-					title: 'Ошибка при считывании портов ',
-					duration: 5000,
-				})
 			}
 
 			// --- Обработка графика загрузки ---
 			const cpuChartData = (monitor.chart || [])
 				.filter((entry: any) => entry.cpu?.cpu_load !== null)
 				.map((entry: any) => ({
-					CPU: entry.cpu.cpu_load,
-					month: new Date(entry.cpu.time).toLocaleString('ru-RU', {
+					CPU: entry.cpu.cpu_load != null ? Number(entry.cpu.cpu_load) : 0,
+					Time: new Date(entry.cpu.time).toLocaleString('ru-RU', {
 						hour: '2-digit',
 						minute: '2-digit',
 					}),
@@ -211,23 +224,39 @@ function Dashboard() {
 
 			// --- Обработка графика статусов ---
 			const statusChartData = (monitor.chart || [])
-				.filter((entry: any) => entry.status?.status !== null)
+				.filter((entry: any) => entry.status_update?.status !== null)
 				.map((entry: any) => ({
-					Status: entry.status.cpu_load,
-					Time: new Date(entry.status.time).toLocaleString('ru-RU', {
+					status: statusMapping[entry.status_update.status] ?? -1,
+					time: new Date(entry.status_update.time).toLocaleString('ru-RU', {
 						hour: '2-digit',
 						minute: '2-digit',
 					}),
 				}))
 
+			// --- Обработка графика пинга ---
+			const pingChartData =
+				monitor.chart?.map((entry:any) => {
+					const ping = entry.chart_ping
+					return {
+						max: Number(ping.max),
+						avg: Number(ping.avg),
+						min: Number(ping.min),
+						time: new Date(ping.time).toLocaleString('ru-RU', {
+							hour: '2-digit',
+							minute: '2-digit',
+						}),
+					}
+				}) || []
 
 			// --- Обработка уведомлений ---
-			setAlerts(monitor.alerts.slice(0, 30))
+			setAlerts(monitor.alerts.slice(0, 20))
 
 			setDeviceMonitor({
 				...monitor,
 				portStats: { open, closed },
 				cpuChartData,
+				statusChartData,
+				pingChartData,
 			})
 		} catch (error) {
 			toaster.error({
@@ -235,6 +264,9 @@ function Dashboard() {
 				description: 'Ошибка: ' + error,
 				duration: 5000,
 			})
+		}
+		finally{
+			setMetricsLoading(false)
 		}
 	}
 
@@ -244,7 +276,7 @@ function Dashboard() {
 			if (deviceData.device_name) {
 				const interval = setInterval(() => {
 					fetchMetrics(deviceData.device_name)
-				}, 500)
+				}, 2000)
 
 				return () => clearInterval(interval)
 			}
@@ -268,13 +300,26 @@ function Dashboard() {
 	})
 
 	const cpuChart = useChart({
-		data: deviceMonitor?.cpuChartData || [],
+		data:
+			deviceMonitor?.cpuChartData?.map(item => ({
+				CPU: typeof item.CPU === 'string' ? parseFloat(item.CPU) : item.CPU,
+				Time: item.Time,
+			})) || [],
 		series: [{ name: 'CPU', color: 'rgba(119, 0, 255, 0.6)' }],
 	})
 
 	const statusChart = useChart({
 		data: deviceMonitor?.statusChartData || [],
-		series: [{ name: 'Status', color: 'rgba(119, 0, 255, 0.6)' }],
+		series: [{ name: 'status', color: '#7700FF' }],
+	})
+
+	const pingChart = useChart({
+		data: deviceMonitor?.pingChartData || [],
+		series: [
+			{ name: 'min', color: 'rgba(10, 203, 91, 0.9)' },
+			{ name: 'avg', color: 'rgba(119, 0, 255, 0.9)' },
+			{ name: 'max', color: 'rgba(255, 79, 18, 0.9)' },
+		],
 	})
 
 	const getColorByStatus = (status: string | undefined): string => {
@@ -362,7 +407,6 @@ function Dashboard() {
 								>
 									<Text>Общий</Text>
 								</Box>
-
 								<Box
 									alignContent='center'
 									paddingInline='5'
@@ -384,7 +428,8 @@ function Dashboard() {
 									<Text>Детальный</Text>
 								</Box>
 							</Flex>
-							<NativeSelect.Root>
+
+							<NativeSelect.Root disabled={devices.length === 0}>
 								<NativeSelect.Field
 									bg='white'
 									boxShadow='0 0 15px rgba(119, 0, 255, 0.3)'
@@ -392,8 +437,9 @@ function Dashboard() {
 									border='1px solid #CCCCCC'
 									fontSize='clamp(5px, 2.4vh, 40px)'
 									borderRadius={10}
+									placeholder={devices.length === 0 ? 'Загрузка...' : undefined}
 									fontWeight={500}
-									cursor='pointer'
+									cursor={devices.length === 0 ? 'disabled' : 'pointer'}
 									value={deviceData.device_name}
 									onChange={e => {
 										const name = e.target.value
@@ -404,11 +450,7 @@ function Dashboard() {
 										fetchMetrics(name)
 									}}
 								>
-									<option
-										value=''
-										hidden
-										className='!bg-[#F2F3F4] text-gray-500'
-									>
+									<option value='' hidden className='!bg-[#F2F3F4]'>
 										Выберите устройство
 									</option>
 									{devices.map(device => (
@@ -614,9 +656,9 @@ function Dashboard() {
 							fontWeight='500'
 						>
 							<VStack h='full' w='full' spaceY={1}>
-								<HStack w='full' h='56.9%' spaceX={1}>
+								<HStack w='full' h='60%' spaceX={1}>
 									<VStack w='67%' h='full' spaceY={1}>
-										<HStack w='full' h='42%' spaceX={1}>
+										<HStack w='full' h='42.2%' spaceX={1}>
 											<VStack h='full' w='38.6%' spaceY={1}>
 												<Box
 													bg='white'
@@ -624,8 +666,8 @@ function Dashboard() {
 													w='full'
 													borderRadius='10px'
 													boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
-													py='1'
-													px='2'
+													py='2'
+													px='3'
 												>
 													<Flex
 														justifyContent='space-between'
@@ -662,7 +704,7 @@ function Dashboard() {
 																deviceMonitor?.base_metrics.status
 															)}
 															fontWeight='500'
-															fontSize='20px'
+															fontSize='19px'
 														>
 															{deviceMonitor?.base_metrics.status ||
 																'Устройство не выбрано '}
@@ -675,8 +717,8 @@ function Dashboard() {
 													w='full'
 													borderRadius='10px'
 													boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
-													py='1'
-													px='2'
+													py='2'
+													px='3'
 													spaceY='-2'
 												>
 													<Text fontSize='20px'>Ping</Text>
@@ -710,28 +752,39 @@ function Dashboard() {
 												borderRadius='10px'
 												boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
 												py='1'
-												px='2'
+												px='3'
+												paddingRight={'5'}
 											>
 												<Text fontSize='20px'>История изменения статусов</Text>
-												<Chart.Root maxH='90%' chart={statusChart}>
+												<Chart.Root maxH='89%' chart={statusChart}>
 													<LineChart
 														data={statusChart.data}
-														margin={{ left: 40, right: 40, top: 40 }}
+														margin={{ left: 20, right: 0 }}
 													>
 														<CartesianGrid
-															stroke={statusChart.color('border')}
-															strokeDasharray='3 3'
-															horizontal={false}
+															stroke={statusChart.color('#CCCCCC')}
+															horizontal={true}
 														/>
 														<XAxis
-															dataKey={statusChart.key('Time')}
-															tickFormatter={value => value.slice(0, 3)}
+															/* tick={} */
+															dataKey={statusChart.key('time')}
+															tickFormatter={value => value.slice(0, 30)}
 															stroke={statusChart.color('border')}
 														/>
 														<YAxis
-															dataKey={statusChart.key('Status')}
+															ticks={[0, 1, 2, 3]}
+															domain={[0, 3]}
+															tickFormatter={value => {
+																const labels = [
+																	'Недоступно',
+																	'Критич.',
+																	'Предупр.',
+																	'Работает',
+																]
+																return labels[value] ?? value
+															}}
+															dataKey={statusChart.key('status')}
 															stroke={statusChart.color('border')}
-															domain={[140, 'dataMax']}
 														/>
 														<Tooltip
 															animationDuration={100}
@@ -746,8 +799,8 @@ function Dashboard() {
 																dataKey={statusChart.key(item.name)}
 																stroke={statusChart.color(item.color)}
 																fill={statusChart.color(item.color)}
-																dot={{ strokeDasharray: '0' }}
-																strokeWidth={2}
+																dot={false}
+																strokeWidth={3}
 																strokeDasharray={item.strokeDasharray}
 															/>
 														))}
@@ -756,71 +809,124 @@ function Dashboard() {
 											</Box>
 										</HStack>
 										<Box
-											h='58%'
+											h='57.8%'
 											w='full'
 											bg='white'
 											borderRadius='10px'
 											boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
-											py='1'
-											px='2'
+											py='0'
+											px='0'
+											overflow='hidden'
 										>
-											<Flex justifyContent='space-between'>
+											<Flex
+												justifyContent='space-between'
+												py='1'
+												paddingLeft='2'
+												paddingRight={'5'}
+											>
 												<Text fontSize='20px'>График загрузки CPU</Text>
 												<Text fontSize='20px'>
 													{deviceMonitor?.base_metrics.cpu_model}
 												</Text>
 											</Flex>
 
-											<Chart.Root h='90%' chart={cpuChart} w='full'>
-												<AreaChart data={cpuChart.data}>
-													<CartesianGrid
-														stroke={cpuChart.color('#CCCCCC')}
-														vertical={true}
-														horizontal={true}
-													/>
-													<YAxis
-														type='number'
-														domain={[0, 100]}
-														ticks={[0, 25, 50, 75, 100]}
-														interval='preserveStartEnd'
-														stroke={cpuChart.color('#CCCCCC')}
-													/>
-													<XAxis
-														dataKey={cpuChart.key('month')}
-														axisLine={true}
-														tick={<></>} // Безопасный способ убрать подписи
-														stroke={cpuChart.color('#CCCCCC')}
-														tickFormatter={value => value.slice(0, 150)}
-													/>
-													<Tooltip
-														cursor={false}
-														animationDuration={100}
-														content={<Chart.Tooltip />}
-													/>
-													{cpuChart.series.map(item => (
-														<Area
-															key={item.name}
-															isAnimationActive={false}
-															dataKey={cpuChart.key(item.name)}
-															fill={cpuChart.color(item.color)}
-															fillOpacity={0.2}
-															stroke={cpuChart.color(item.color)}
-															stackId='a'
-														/>
-													))}
-												</AreaChart>
-											</Chart.Root>
+											{deviceMonitor?.base_metrics.cpu_load ==
+												deviceMonitor?.base_metrics.cpu_load &&
+											!deviceMonitor?.base_metrics.network_transmitted ? (
+												<Flex
+													width='100%'
+													height='50%'
+													alignItems='center'
+													justifyContent='center'
+													fontSize='30px'
+													color='#CCCCCC'
+												>
+													<Text>не удалось получить данные</Text>
+												</Flex>
+											) : (
+												<>
+													<Chart.Root h='70%' chart={cpuChart} w='full'>
+														<AreaChart
+															data={cpuChart.data}
+															margin={{
+																left: -25,
+																right: 20,
+																top: 10,
+																bottom: 10,
+															}}
+														>
+															<CartesianGrid
+																stroke={cpuChart.color('#CCCCCC')}
+																vertical={true}
+																horizontal={true}
+															/>
+															<YAxis
+																type='number'
+																domain={[0, 100]}
+																ticks={[0, 25, 50, 75, 100]}
+																interval='preserveStartEnd'
+																stroke={cpuChart.color('#CCCCCC')}
+															/>
+															<Tooltip
+																cursor={false}
+																animationDuration={100}
+																content={<Chart.Tooltip hideLabel />}
+															/>
+															{cpuChart.series.map(item => (
+																<Area
+																	key={item.name}
+																	isAnimationActive={false}
+																	dataKey={cpuChart.key(item.name)}
+																	fill={cpuChart.color(item.color)}
+																	fillOpacity={0.2}
+																	stroke={cpuChart.color(item.color)}
+																	stackId='a'
+																/>
+															))}
+														</AreaChart>
+													</Chart.Root>
+													<Flex
+														fontSize={12}
+														fontWeight='400'
+														w='full'
+														justifyContent='space-between'
+														paddingLeft='8'
+														paddingRight='5'
+													>
+														<Box spaceX={5}>
+															<Text as='span'>
+																Использование:&nbsp;
+																<Text as='span' fontWeight='600'>
+																	{deviceMonitor?.base_metrics.cpu_load ?? 0}%
+																</Text>
+															</Text>
+															<Text as='span'>
+																Скорость:&nbsp;
+																<Text as='span' fontWeight='600'>
+																	{deviceMonitor?.base_metrics.cpu_freq ?? 0}
+																</Text>
+															</Text>
+														</Box>
+														<Box>
+															Ядра:&nbsp;
+															<Text as='span' fontWeight='600'>
+																{deviceMonitor?.base_metrics.cpu_cores ?? 0}
+															</Text>
+														</Box>
+													</Flex>
+												</>
+											)}
 										</Box>
 									</VStack>
-									<VStack w='33%' h='full' spaceY={1.5}>
+									<VStack w='33%' h='full' spaceY={1}>
 										<Box
 											bg='white'
 											w='full'
 											h='48.47%'
 											borderRadius='10px'
 											boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
-											py='1'
-											px='2'
+											py='2'
+											px='3'
 										>
 											<Text fontSize='20px'>Основные метрики</Text>
 											<VStack
@@ -832,7 +938,7 @@ function Dashboard() {
 												<Flex w='full' justifyContent='space-between'>
 													<Text>Ping</Text>
 													<Text>
-														{deviceMonitor?.base_metrics.ping || 'NULL '}m/s
+														{deviceMonitor?.base_metrics.ping || 'NULL'}ms
 													</Text>
 												</Flex>
 
@@ -841,8 +947,7 @@ function Dashboard() {
 												<Flex w='full' justifyContent='space-between'>
 													<Text>Потеря пакетов</Text>
 													<Text>
-														{deviceMonitor?.base_metrics.packet_loss || 'NULL '}
-														%
+														{deviceMonitor?.base_metrics.packet_loss || '0'}%
 													</Text>
 												</Flex>
 
@@ -860,8 +965,7 @@ function Dashboard() {
 												<Flex w='full' justifyContent='space-between'>
 													<Text>Использование памяти</Text>
 													<Text>
-														{deviceMonitor?.base_metrics.memory_used || 'NULL '}
-														%
+														{deviceMonitor?.base_metrics.memory_used || '0'}%
 													</Text>
 												</Flex>
 
@@ -886,8 +990,8 @@ function Dashboard() {
 											h='51.53%'
 											borderRadius='10px'
 											boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
-											py='1'
-											px='2'
+											py='2'
+											px='3'
 										>
 											<Text fontSize='20px'>Журнал событий</Text>
 											<VStack
@@ -903,6 +1007,18 @@ function Dashboard() {
 													},
 												}}
 											>
+												{alerts.length === 0 && (
+													<Box
+														display='flex'
+														alignItems='center'
+														justifyContent='center'
+														h='70%' // Такая же высота как у графика
+														fontSize='30px'
+														color='#CCCCCC'
+													>
+														<Text>журнал событий пуст</Text>
+													</Box>
+												)}
 												{alerts.map(alert => {
 													const { time, day } = formatDate(alert.time)
 													return (
@@ -946,44 +1062,60 @@ function Dashboard() {
 										w='25%'
 										borderRadius='10px'
 										boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
-										py='1'
-										px='2'
+										py='2'
+										px='3'
 									>
 										<Text fontSize='20px'>Статистика портов</Text>
-										<Chart.Root
-											fontSize='15px'
-											boxSize='90%'
-											mx='auto'
-											chart={portChart}
-										>
-											<PieChart>
-												<Legend content={<Chart.Legend />} />
-												<Tooltip
-													cursor={false}
-													animationDuration={100}
-													content={<Chart.Tooltip hideLabel />}
-												/>
-												<Pie
-													isAnimationActive={false}
-													data={portChart.data}
-													dataKey={portChart.key('value')}
-													labelLine={{
-														stroke: portChart.color('border.emphasized'),
-													}}
-													label={{
-														fill: portChart.color('fg.muted'),
-														style: { fontWeight: '600' },
-													}}
-												>
-													{portChart.data.map(item => (
-														<Cell
-															key={item.name}
-															fill={portChart.color(item.color)}
-														/>
-													))}
-												</Pie>
-											</PieChart>
-										</Chart.Root>
+										{deviceMonitor?.base_metrics.port ? (
+											<Chart.Root
+												fontSize='14px'
+												boxSize='90%'
+												w='full'
+												mx='auto'
+												chart={portChart}
+											>
+												<PieChart>
+													<Legend content={<Chart.Legend />} />
+													<Tooltip
+														cursor={false}
+														animationDuration={100}
+														content={<Chart.Tooltip hideLabel />}
+													/>
+													<Pie
+														isAnimationActive={false}
+														data={portChart.data}
+														dataKey={portChart.key('value')}
+														labelLine={{
+															stroke: portChart.color('border.emphasized'),
+														}}
+														label={{
+															fill: portChart.color('fg.muted'),
+															style: { fontWeight: '500' },
+														}}
+													>
+														{portChart.data.map(item => (
+															<Cell
+																key={item.name}
+																fill={portChart.color(item.color)}
+															/>
+														))}
+													</Pie>
+												</PieChart>
+											</Chart.Root>
+										) : (
+											<Flex
+												width='100%'
+												height='80%'
+												alignItems='center'
+												justifyContent='center'
+												fontSize='30px'
+												color='#CCCCCC'
+											>
+												<Text textAlign='center'>
+													порты не были выбраны пользователем
+												</Text>
+											</Flex>
+										)}
 									</Box>
 									<Box
 										bg='white'
@@ -991,10 +1123,61 @@ function Dashboard() {
 										w='75%'
 										borderRadius='10px'
 										boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
-										py='1'
-										px='2'
+										py='2'
+										px='3'
 									>
-										<Text fontSize='20px'>Сбои за последние 24 часа</Text>
+										<Text fontSize='20px'>График Ping</Text>
+										{deviceData.device_name ? (
+											<Chart.Root height={220} maxH='90%' chart={pingChart}>
+												<AreaChart
+													data={pingChart.data}
+													margin={{ left: 0, right: 0, top: 2, bottom: 0 }}
+												>
+													<CartesianGrid
+														stroke={pingChart.color('#CCCCCC')}
+														vertical={true}
+													/>
+													<YAxis domain={['auto', 'auto']} />
+													<XAxis
+														axisLine={false}
+														tickLine={false}
+														dataKey={pingChart.key('time')}
+														tickFormatter={value => value.slice(0, 10)}
+													/>
+													<Tooltip
+														cursor={false}
+														animationDuration={100}
+														content={<Chart.Tooltip />}
+													/>
+													<Legend
+														content={<Chart.Legend />}
+														margin={{ left: 0, right: 0, top: 0, bottom: 0 }}
+													/>
+													{pingChart.series.map(item => (
+														<Area
+															key={item.name}
+															isAnimationActive={false}
+															dataKey={pingChart.key(item.name)}
+															fill={pingChart.color(item.color)}
+															fillOpacity={0.2}
+															stroke={pingChart.color(item.color)}
+															stackId='a'
+														/>
+													))}
+												</AreaChart>
+											</Chart.Root>
+										) : (
+											<Box
+												display='flex'
+												alignItems='center'
+												justifyContent='center'
+												h='70%' // Такая же высота как у графика
+												fontSize='30px'
+												color='#CCCCCC'
+											>
+												<Text>устройство не выбрано</Text>
+											</Box>
+										)}
 									</Box>
 								</HStack>
 							</VStack>

@@ -48,8 +48,14 @@ function Settings() {
 		try {
 			const token = localStorage.getItem('token')
 			const response = await axios.put(
-				'http://130.193.56.188:3000/user/edit',
-				{ username: data.username, email: data.email, email_report: data.email_report, phone: data.phone, role: data.role },
+				'http://84.201.180.84:3000/api/user/edit',
+				{
+					username: data.username,
+					email: data.email,
+					email_report: data.email_report,
+					phone: data.phone,
+					role: data.role,
+				},
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -80,11 +86,11 @@ function Settings() {
 		const fetchSettings = async () => {
 
 			try {
-				const response = await axios.get('http://130.193.56.188:3000/user',{
+				const response = await axios.get('http://84.201.180.84:3000/api/user', {
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
-			})
+				})
 				setData(response.data)
 				setInitialData(response.data)
 			} catch (err) {
@@ -227,6 +233,8 @@ function Settings() {
 											_focus={{ outline: 'none' }}
 											whiteSpace='nowrap'
 											transition='all 0.2s ease-in-out'
+											cursor='disabled'
+											disabled     //кнопка на будущее
 										>
 											Сменить почту
 										</Button>
@@ -283,7 +291,7 @@ function Settings() {
 									<Text fontSize='20px' fontWeight='500' color='black' p='0%'>
 										Роль
 									</Text>
-									<NativeSelect.Root>
+									<NativeSelect.Root disabled>
 										<NativeSelect.Field
 											bg='#F2F3F4'
 											color='black'

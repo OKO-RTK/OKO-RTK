@@ -24,20 +24,17 @@ function General() {
 								px='2'
 								spaceY='-3'
 							>
-								<Text fontSize='20px'>Работает</Text>
-								<Flex
-									mb='3'
-									spaceY='-2'
-									flexDirection='column'
-									alignItems={'center'}
+								<Box
+									display='flex'
+									alignItems='center'
+									justifyContent='center'
+									height='100%' // такой же как у Chart.Root
+									width='100%'
+									fontSize='22px'
+									color='#CCCCCC'
 								>
-									<Text color='#0ACB5B' fontWeight='500' fontSize='28px'>
-										67ms
-									</Text>
-									<Text color='#CCCCCC' fontWeight='500' fontSize='10px'>
-										Пинг устройства в миллисекундах
-									</Text>
-								</Flex>
+									<Text>раздел в разработке</Text>
+								</Box>
 							</Box>
 							<Box
 								bg='white'
@@ -49,20 +46,17 @@ function General() {
 								px='2'
 								spaceY='-3'
 							>
-								<Text fontSize='20px'>Предупреждение</Text>
-								<Flex
-									mb='3'
-									spaceY='-2'
-									flexDirection='column'
-									alignItems={'center'}
+								<Box
+									display='flex'
+									alignItems='center'
+									justifyContent='center'
+									height='100%' // такой же как у Chart.Root
+									width='100%'
+									fontSize='22px'
+									color='#CCCCCC'
 								>
-									<Text color='#0ACB5B' fontWeight='500' fontSize='28px'>
-										67ms
-									</Text>
-									<Text color='#CCCCCC' fontWeight='500' fontSize='10px'>
-										Пинг устройства в миллисекундах
-									</Text>
-								</Flex>
+									<Text>раздел в разработке</Text>
+								</Box>
 							</Box>
 						</HStack>
 						<HStack w='full' h='20%'>
@@ -76,20 +70,17 @@ function General() {
 								px='2'
 								spaceY='-3'
 							>
-								<Text fontSize='20px'>Критическое состояние</Text>
-								<Flex
-									mb='3'
-									spaceY='-2'
-									flexDirection='column'
-									alignItems={'center'}
+								<Box
+									display='flex'
+									alignItems='center'
+									justifyContent='center'
+									height='100%' // такой же как у Chart.Root
+									width='100%'
+									fontSize='22px'
+									color='#CCCCCC'
 								>
-									<Text color='#0ACB5B' fontWeight='500' fontSize='28px'>
-										67ms
-									</Text>
-									<Text color='#CCCCCC' fontWeight='500' fontSize='10px'>
-										Пинг устройства в миллисекундах
-									</Text>
-								</Flex>
+									<Text>раздел в разработке</Text>
+								</Box>
 							</Box>
 							<Box
 								bg='white'
@@ -101,7 +92,7 @@ function General() {
 								px='2'
 								spaceY='-3'
 							>
-								<Text fontSize='20px'>Недоступно</Text>
+								{/* 								<Text fontSize='20px'>Недоступно</Text>
 								<Flex
 									mb='3'
 									spaceY='-2'
@@ -114,7 +105,18 @@ function General() {
 									<Text color='#CCCCCC' fontWeight='500' fontSize='10px'>
 										Пинг устройства в миллисекундах
 									</Text>
-								</Flex>
+								</Flex> */}
+								<Box
+									display='flex'
+									alignItems='center'
+									justifyContent='center'
+									height='100%' // такой же как у Chart.Root
+									width='100%'
+									fontSize='22px'
+									color='#CCCCCC'
+								>
+									<Text>раздел в разработке</Text>
+								</Box>
 							</Box>
 						</HStack>
 						<Box
@@ -125,7 +127,19 @@ function General() {
 							boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
 							py='1'
 							px='2'
-						></Box>
+						>
+							<Box
+								display='flex'
+								alignItems='center'
+								justifyContent='center'
+								height='100%' // такой же как у Chart.Root
+								width='100%'
+								fontSize='40px'
+								color='#CCCCCC'
+							>
+								<Text>раздел в разработке</Text>
+							</Box>
+						</Box>
 					</VStack>
 					<Box
 						bg='white'
@@ -135,7 +149,19 @@ function General() {
 						boxShadow='0 0 5px rgba(0, 0, 0, 0.1)'
 						py='1'
 						px='2'
-					></Box>
+					>
+						<Box
+							display='flex'
+							alignItems='center'
+							justifyContent='center'
+							height='100%' // такой же как у Chart.Root
+							width='100%'
+							fontSize='50px'
+							color='#CCCCCC'
+						>
+							<Text>раздел в разработке</Text>
+						</Box>
+					</Box>
 				</HStack>
 				<HStack w='full' h='41.1%' spaceX={2}>
 					<Box
@@ -147,7 +173,17 @@ function General() {
 						py='1'
 						px='2'
 					>
-						<Text fontSize='20px'>Статистика работоспособности устройств</Text>
+						<Box
+							display='flex'
+							alignItems='center'
+							justifyContent='center'
+							height='100%' // такой же как у Chart.Root
+							width='100%'
+							fontSize='30px'
+							color='#CCCCCC'
+						>
+							<Text>раздел в разработке</Text>
+						</Box>
 					</Box>
 					<Box
 						bg='white'
@@ -158,7 +194,17 @@ function General() {
 						py='1'
 						px='2'
 					>
-						<Text fontSize='20px'>Сбои за последние 24 часа</Text>
+						<Box
+							display='flex'
+							alignItems='center'
+							justifyContent='center'
+							height='100%' // такой же как у Chart.Root
+							width='100%'
+							fontSize='50px'
+							color='#CCCCCC'
+						>
+							<Text>раздел в разработке</Text>
+						</Box>
 					</Box>
 				</HStack>
 			</VStack>

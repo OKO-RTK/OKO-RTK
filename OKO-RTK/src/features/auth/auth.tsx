@@ -20,32 +20,30 @@ const CustomTabs = () => {
 		setLoading(true)
 		
 		const token = localStorage.getItem('token')
+
 		const payload = { login, password }
 		console.log('Check payload:', payload)
 
 		try {
 			const endpoint =
 				activeTab === 'user'
-					? 'http://130.193.56.188:3000/login'
-					: 'http://130.193.56.188:3000/login/admin'
+					? 'http://84.201.180.84:3000/api/login'
+					: 'http://84.201.180.84:3000/api/login/admin'
 
 			const response = await axios.post(endpoint, payload, {
 				headers: {
 					'Content-Type': 'application/json',
 				},
 			})
-			toaster.success({
-				title: 'Ваш токен: ' + response.data.access_token,
-				duration: 5000,
-			})
 			localStorage.setItem('token', response.data.access_token)
 			navigate('/')
 		} catch (error) {
-			const err = error as AxiosError<{ message?: string }>
-
+			const err = error as AxiosError<{ error?: string }>
+			const message = err.response?.data?.error || 'Неизвестная ошибка'
 			if (err.response) {
 				toaster.error({
-					title: 'Ошибка входа: ' + err,
+					title: 'Ошибка входа',
+					description: message,
 					duration: 5000,
 				})
 			} else {
@@ -60,7 +58,11 @@ const CustomTabs = () => {
 		setLoading(true)
 
 		if (password !== confirmPassword) {
-			alert('Пароли не совпадают')
+			toaster.error({
+				title: 'Ошибка',
+				description: 'Пароли не совпадают',
+				duration: 5000,
+			})
 			setLoading(false)
 			return
 		}
@@ -71,8 +73,8 @@ const CustomTabs = () => {
 		try {
 			const endpoint =
 				activeTab === 'user'
-					? 'http://130.193.56.188:3000/register'
-					: 'http://130.193.56.188:3000/register/admin'
+					? 'http://84.201.180.84:3000/api/register'
+					: 'http://84.201.180.84:3000/api/register/admin'
 
 			const response = await axios.post(endpoint, payload, {
 				headers: {
@@ -88,14 +90,17 @@ const CustomTabs = () => {
 			console.log('Register success:', response.data)
 			setIsRegistering(false)
 		} catch (error) {
-			const err = error as AxiosError<{ message?: string }>
+			const err = error as AxiosError<{ error?: string }>
 
 			if (err.response) {
-				alert(
-					`Ошибка регистрации: ${
-						err.response.data?.message || err.response.statusText
-					}`
-				)
+				const message = err.response?.data?.error || 'Неизвестная ошибка'
+				if (err.response) {
+					toaster.error({
+						title: 'Ошибка регистрации',
+						description: '' + message,
+						duration: 5000,
+					})
+				}
 			} else {
 				alert('Ошибка регистрации: Сервер недоступен или нет ответа')
 			}
@@ -156,8 +161,8 @@ const CustomTabs = () => {
 						onClick={() => {
 							setActiveTab('admin') 
 							setLogin('')
-	                        setPassword('')
-	                        setConfirmPassword('')
+	            setPassword('')
+	            setConfirmPassword('')
 						}}
 						_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)' }}
 						fontWeight='500'

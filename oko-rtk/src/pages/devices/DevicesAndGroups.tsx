@@ -1,6 +1,6 @@
 import { FiPlus, FiCheck, FiX } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { Toaster, toaster } from '@/components/ui/toaster'
 import {
   Flex,
@@ -66,28 +66,22 @@ function DevicesAndGroups() {
     const token = localStorage.getItem('token')
     try {
       const response = await axios.get<{ devices: Device[] }>(
-        'http://130.193.56.188:3000/device',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+				'http://84.201.180.84:3000/api/device',
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json',
+					},
+				}
+			)
       const devicesArr = response.data.devices
       if (Array.isArray(devicesArr)) {
         setDevices(devicesArr.slice(0, 50))
       } 
-      else{
-        toaster.error({
-					title: 'Ошибка при формировании массива устройств',
-					duration: 5000,
-				})
-      }
     } catch (err) {
       toaster.error({
 				title: 'Ошибка при загрузке списка устройств',
-				description: 'Ошибка ' + err,
+				description: '' + err,
 				duration: 5000,
 			})
     }
@@ -103,7 +97,7 @@ function DevicesAndGroups() {
     try{
       const token = localStorage.getItem('token');
       await axios.post(
-				'http://130.193.56.188:3000/device/add',
+				'http://84.201.180.84:3000/api/device/add',
 				{
 					device_name: deviceData.device_name,
 					device_login: deviceData.device_login,
@@ -124,15 +118,18 @@ function DevicesAndGroups() {
 				}
 			)
     toaster.success({
-			title: 'Устройство ' + deviceData.device_name + ' успешно создано',
+			title: `Устройство ${deviceData.device_name}' успешно создано`,
 			duration: 5000,
 		})
     setDevicesKey(prev => prev + 1)
     fetchDevices()
   }
-    catch (err){
+    catch (error){
+      const err = error as AxiosError<{ error?: string }>
+      const message = err.response?.data?.error || 'Неизвестная ошибка'
       toaster.error({
 				title: 'Ошибка при добавлении устройства',
+        description: message,
 				duration: 5000,
 			})
     }
@@ -143,28 +140,22 @@ function DevicesAndGroups() {
       const token = localStorage.getItem('token')
       try {
         const response = await axios.get<{ groups: Group[] }>(
-          'http://130.193.56.188:3000/group',
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        )
+					'http://84.201.180.84:3000/api/group',
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+							'Content-Type': 'application/json',
+						},
+					}
+				)
         const groupsArr = response.data.groups
         if (Array.isArray(groupsArr)) {
           setGroups(groupsArr)
         } 
-        else{
-          toaster.error({
-            title: 'Ошибка при формировании массива групп',
-            duration: 5000,
-          })
-        }
       } catch (err) {
         toaster.error({
           title: 'Ошибка при формировании массива групп ',
-          description: 'Ошибка при загрузке списка групп ' + err,
+          description: '' + err,
           duration: 5000,
         })
       }
@@ -175,7 +166,7 @@ function DevicesAndGroups() {
 		try {
 			const token = localStorage.getItem('token')
 			await axios.post(
-				'http://130.193.56.188:3000/group/add',
+				'http://84.201.180.84:3000/api/group/add',
 				{
 					group_name: groupData.group_name,
 				},
@@ -187,7 +178,7 @@ function DevicesAndGroups() {
 				}
 			)
 			toaster.success({
-				title: 'Группа ' + groupData.group_name + ' успешно создана',
+				title: `Группа '${groupData.group_name}' успешно создана`,
 				duration: 5000,
 			})
 			setGroupsKey(prev => prev + 1)
@@ -195,7 +186,7 @@ function DevicesAndGroups() {
 		} catch (err) {
 			toaster.error({
 				title: 'Ошибка при создании группы',
-        description: 'Ошибка: ' + err, 
+        description: '' + err, 
 				duration: 5000,
 			})
 		}
@@ -543,7 +534,7 @@ function DevicesAndGroups() {
 															<Text fontWeight={500} fontSize={20} mb={2}>
 																Выберите группу для устройства
 															</Text>
-															<NativeSelect.Root>
+															<NativeSelect.Root disabled={groups.length === 0}>
 																<NativeSelect.Field
 																	bg='#F2F3F4'
 																	color='black'
@@ -551,7 +542,14 @@ function DevicesAndGroups() {
 																	borderRadius={10}
 																	borderColor={'transparent'}
 																	fontWeight={500}
-																	cursor='pointer'
+																	placeholder={
+																		groups.length === 0
+																			? 'Сначала создайте хотя-бы одну группу'
+																			: undefined
+																	}
+																	cursor={
+																		groups.length === 0 ? 'disabled' : 'pointer'
+																	}
 																	value={deviceData.device_group}
 																	onChange={e =>
 																		setDeviceData(prev => ({
@@ -562,8 +560,7 @@ function DevicesAndGroups() {
 																>
 																	<option
 																		value=''
-																		disabled
-																		hidden
+                                    disabled
 																		className='!bg-[#F2F3F4] text-gray-500'
 																	>
 																		Выберите группу
@@ -632,36 +629,44 @@ function DevicesAndGroups() {
 																}
 															>
 																<Flex gap='2'>
-																	{items.map(item => (
-																		<CheckboxCard.Root
-																			key={item.value}
-																			value={item.value}
-																			borderRadius='10px'
-																			borderColor='#7700FF'
-																			borderWidth='1.8px'
-																			fontSize='14px'
-																			maxH='30px'
-																			display='flex'
-																			alignItems='center'
-																			justifyContent='center'
-																			cursor='pointer'
-																			className='text-[#7700FF] transition-all 
-                                    bg-white 
-                                    hover:bg-[#7700FF] hover:text-white focus:bg-[#7700FF] 
-                                    hover:shadow-[0px_0px_10px_rgba(119,0,255,0.5)] max-h-[30px] w-[107px] 
-                                    data-[state=checked]:bg-[#7700FF] data-[state=checked]:text-white
-                                    data-[state=checked]:shadow-[0px_0px_10px_rgba(119,0,255,0.5)]'
-																		>
-																			<CheckboxCard.HiddenInput />
-																			<CheckboxCard.Control>
-																				<CheckboxCard.Content>
-																					<CheckboxCard.Label>
-																						{item.title}
-																					</CheckboxCard.Label>
-																				</CheckboxCard.Content>
-																			</CheckboxCard.Control>
-																		</CheckboxCard.Root>
-																	))}
+																	{items.map(item => {
+																		const isPing = item.value === 'ping'
+																		return (
+																			<CheckboxCard.Root
+																				key={item.value}
+																				value={item.value}
+																				borderRadius='10px'
+																				borderColor='#7700FF'
+																				borderWidth='1.8px'
+																				fontSize='14px'
+																				maxH='30px'
+																				display='flex'
+																				alignItems='center'
+																				justifyContent='center'
+																				cursor={
+																					isPing ? 'not-allowed' : 'pointer'
+																				}
+																				opacity={isPing ? 0.8 : 1}
+																				pointerEvents={isPing ? 'none' : 'auto'}
+																				background={isPing ? '#7700FF' : 'auto'}
+																				color={isPing ? 'white' : 'auto'}
+																				className='text-[#7700FF] transition-all 
+																				hover:bg-[#7700FF] hover:text-white focus:bg-[#7700FF] 
+																				hover:shadow-[0px_0px_10px_rgba(119,0,255,0.5)] max-h-[30px] w-[107px] 
+																				data-[state=checked]:bg-[#7700FF] data-[state=checked]:text-white
+																				data-[state=checked]:shadow-[0px_0px_10px_rgba(119,0,255,0.5)]'
+																			>
+																				<CheckboxCard.HiddenInput />
+																				<CheckboxCard.Control>
+																					<CheckboxCard.Content>
+																						<CheckboxCard.Label>
+																							{item.title}
+																						</CheckboxCard.Label>
+																					</CheckboxCard.Content>
+																				</CheckboxCard.Control>
+																			</CheckboxCard.Root>
+																		)
+																	})}
 																</Flex>
 															</CheckboxGroup>
 														</Box>

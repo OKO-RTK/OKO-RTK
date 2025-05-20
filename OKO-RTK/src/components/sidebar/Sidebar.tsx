@@ -12,6 +12,9 @@ import { NavLink } from 'react-router-dom'
 import '../../index.css'
 
 function Sidebar(){
+	const handleExit = async () => {
+		localStorage.removeItem('token')
+	}
   return (
 		<Box
 			w='4.4vw'
@@ -107,6 +110,7 @@ function Sidebar(){
 					</Box>
 				</NavLink>
 				<NavLink
+					onClick={handleExit}
 					to='/auth'
 					style={{ display: 'block', width: '100%' }}
 					className={({ isActive }) =>

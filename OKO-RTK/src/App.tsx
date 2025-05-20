@@ -1,5 +1,7 @@
 import AuthFull from './pages/authorization/AuthFull'
 import Sidebar from './components/sidebar/Sidebar'
+import { ProtectedRoute } from '@/components/ProtectedRoute'
+import { PublicRoute } from '@/components/PublicRoute'
 import Dashboard from './pages/dashboard/Dashboard'
 import DevicesMap from './pages/map/DevicesMap'
 import Settings from './pages/settings/Settings'
@@ -23,15 +25,47 @@ const MainContent: React.FC = () => {
 	const location = useLocation()
 
 	return (
-		/* 		<div className='w-screen h-full overflow-x-hidden bg-[#F4F4F5]'>
-			<AuthFull />
-		</div> */
 		<Routes>
-			<Route path='/auth' element={<AuthFull />}></Route>
-			<Route path='/' element={<Dashboard />}></Route>
-			<Route path='/devices_map' element={<DevicesMap />}></Route>
-			<Route path='/devices' element={<DevicesAndGroups />}></Route>
-			<Route path='/settings' element={<Settings />}></Route>
+			<Route
+				path='/auth'
+				element={
+					<PublicRoute>
+						<AuthFull />
+					</PublicRoute>
+				}
+			/>
+			<Route
+				path='/'
+				element={
+					<ProtectedRoute>
+						<Dashboard />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path='/devices_map'
+				element={
+					<ProtectedRoute>
+						<DevicesMap />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path='/devices'
+				element={
+					<ProtectedRoute>
+						<DevicesAndGroups />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path='/settings'
+				element={
+					<ProtectedRoute>
+						<Settings />
+					</ProtectedRoute>
+				}
+			/>
 		</Routes>
 	)
 }
