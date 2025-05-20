@@ -72,9 +72,9 @@ function Settings() {
 				duration: 5000,
 			})
 		} catch (err) {
-			toaster.success({
+			toaster.error({
 				title: 'Ошибка при сохранении данных ',
-				description: 'Ошибка ' + err,
+				description: '' + err,
 				duration: 5000,
 			})
 		}
@@ -94,9 +94,9 @@ function Settings() {
 				setData(response.data)
 				setInitialData(response.data)
 			} catch (err) {
-				toaster.success({
+				toaster.error({
 					title: 'Ошибка при получении данных ',
-					description: 'Ошибка ' + err,
+					description: '' + err,
 					duration: 5000,
 				})
 			} finally {

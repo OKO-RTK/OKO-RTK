@@ -5,18 +5,11 @@ import {
 	Text,
 	HStack,
 	Button,
-	CloseButton,
 	Dialog,
 	Portal,
 	Input,
 	NativeSelect,
 	VStack,
-	Stack,
-	createListCollection,
-	SkeletonText,
-	Skeleton,
-	SkeletonCircle,
-	Spinner,
 } from '@chakra-ui/react'
 import { FiUpload, FiCheck, FiX } from 'react-icons/fi'
 import '../../index.css'
@@ -56,8 +49,6 @@ interface Alert{
 }
 
 function Dashboard() {
-
-	const [metricsLoading, setMetricsLoading] = useState(false)
 
 	const [activeTab, setActiveTab] = useState<'general' | 'detailed'>('detailed')
 
@@ -180,7 +171,6 @@ function Dashboard() {
 	const fetchMetrics = async (name: string) => {
 
 		const token = localStorage.getItem('token')
-		setMetricsLoading(true)
 		try {
 			const response = await axios.get(
 				`http://84.201.180.84:3000/api/dashboard/device/` + name,
@@ -259,14 +249,11 @@ function Dashboard() {
 				pingChartData,
 			})
 		} catch (error) {
-			toaster.error({
-				title: 'Ошибка при получении метрик устройства',
-				description: 'Ошибка: ' + error,
+			toaster.warning({
+				title: 'Не удалось получить метрики устройства',
+				description: '' + error,
 				duration: 5000,
 			})
-		}
-		finally{
-			setMetricsLoading(false)
 		}
 	}
 
@@ -429,42 +416,53 @@ function Dashboard() {
 								</Box>
 							</Flex>
 
-							<NativeSelect.Root disabled={devices.length === 0}>
-								<NativeSelect.Field
-									bg='white'
-									boxShadow='0 0 15px rgba(119, 0, 255, 0.3)'
-									color='#7700FF'
-									border='1px solid #CCCCCC'
-									fontSize='clamp(5px, 2.4vh, 40px)'
-									borderRadius={10}
-									placeholder={devices.length === 0 ? 'Загрузка...' : undefined}
-									fontWeight={500}
-									cursor={devices.length === 0 ? 'disabled' : 'pointer'}
-									value={deviceData.device_name}
-									onChange={e => {
-										const name = e.target.value
-										setDeviceData(prev => ({
-											...prev,
-											device_name: name,
-										}))
-										fetchMetrics(name)
-									}}
+							<Flex borderRadius='10px' w='fit-content' bg='white' h='57.253%'>
+								<NativeSelect.Root
+									disabled={devices.length === 0}
+									w='100%'
+									h='100%'
+									alignContent='center'
 								>
-									<option value='' hidden className='!bg-[#F2F3F4]'>
-										Выберите устройство
-									</option>
-									{devices.map(device => (
-										<option
-											key={device.device_id}
-											value={device.device_name}
-											className='!bg-[#F2F3F4]'
-										>
-											{device.device_name}
+									<NativeSelect.Field
+										w='100%'
+										h='100%'
+										bg='transparent'
+										boxShadow='0 0 15px rgba(119, 0, 255, 0.3)'
+										color='#7700FF'
+										border='1px solid #CCCCCC'
+										fontSize='clamp(5px, 2.4vh, 40px)'
+										borderRadius={10}
+										placeholder={
+											devices.length === 0 ? 'Загрузка...' : undefined
+										}
+										fontWeight={500}
+										cursor={devices.length === 0 ? 'disabled' : 'pointer'}
+										value={deviceData.device_name}
+										onChange={e => {
+											const name = e.target.value
+											setDeviceData(prev => ({
+												...prev,
+												device_name: name,
+											}))
+											fetchMetrics(name)
+										}}
+									>
+										<option value='' hidden className='!bg-[#F2F3F4]'>
+											Выберите устройство
 										</option>
-									))}
-								</NativeSelect.Field>
-								<NativeSelect.Indicator />
-							</NativeSelect.Root>
+										{devices.map(device => (
+											<option
+												key={device.device_id}
+												value={device.device_name}
+												className='!bg-[#F2F3F4]'
+											>
+												{device.device_name}
+											</option>
+										))}
+									</NativeSelect.Field>
+									<NativeSelect.Indicator />
+								</NativeSelect.Root>
+							</Flex>
 
 							{deviceData.device_name != '' && (
 								<Dialog.Root>
@@ -659,7 +657,7 @@ function Dashboard() {
 								<HStack w='full' h='60%' spaceX={1}>
 									<VStack w='67%' h='full' spaceY={1}>
 										<HStack w='full' h='42.2%' spaceX={1}>
-											<VStack h='full' w='38.6%' spaceY={1}>
+											<VStack h='full' w='40%' spaceY={1}>
 												<Box
 													bg='white'
 													h='45%'
@@ -676,14 +674,16 @@ function Dashboard() {
 														<Text
 															color='black'
 															fontWeight='500'
-															fontSize='16px'
+															//fontSize='17px'
+															fontSize='clamp(10px, 2.05vh, 40px)' // заголовок от высоты
 														>
 															Текущий статус
 														</Text>
 														<Text
 															color='#666666'
 															fontWeight='500'
-															fontSize='10px'
+															//fontSize='10px'
+															fontSize='clamp(6px, 1.2vh, 14px)' // дата от высоты
 															mt='1'
 														>
 															{deviceMonitor?.base_metrics.time
@@ -704,10 +704,11 @@ function Dashboard() {
 																deviceMonitor?.base_metrics.status
 															)}
 															fontWeight='500'
-															fontSize='19px'
+															//fontSize='20px'
+															fontSize='clamp(10px, 2.3vh, 40px)' // статус от высоты
 														>
-															{deviceMonitor?.base_metrics.status ||
-																'Устройство не выбрано '}
+															{deviceMonitor?.base_metrics.status.toLowerCase() ||
+																'устройство не выбрано '}
 														</Text>
 													</Flex>
 												</Box>
@@ -721,7 +722,12 @@ function Dashboard() {
 													px='3'
 													spaceY='-2'
 												>
-													<Text fontSize='20px'>Ping</Text>
+													<Text
+														//fontSize='20px'
+														fontSize='clamp(12px, 2.5vh, 40px)'
+													>
+														Ping
+													</Text>
 													<Flex
 														mb='3'
 														spaceY='-2'
@@ -731,14 +737,16 @@ function Dashboard() {
 														<Text
 															color='black'
 															fontWeight='500'
-															fontSize='28px'
+															fontSize='clamp(5px, 3.8vh, 50px)'
+															//fontSize='28px'
 														>
 															{deviceMonitor?.base_metrics.ping || 'NULL'}ms
 														</Text>
 														<Text
 															color='#CCCCCC'
 															fontWeight='500'
-															fontSize='10px'
+															//fontSize='10px'
+															fontSize='clamp(6px, 1.2vh, 14px)'
 														>
 															Пинг устройства в миллисекундах
 														</Text>
@@ -755,7 +763,12 @@ function Dashboard() {
 												px='3'
 												paddingRight={'5'}
 											>
-												<Text fontSize='20px'>История изменения статусов</Text>
+												<Text
+													//fontSize='20px'
+													fontSize='clamp(12px, 2.5vh, 40px)'
+												>
+													История изменения статусов
+												</Text>
 												<Chart.Root maxH='89%' chart={statusChart}>
 													<LineChart
 														data={statusChart.data}
@@ -824,7 +837,12 @@ function Dashboard() {
 												paddingLeft='2'
 												paddingRight={'5'}
 											>
-												<Text fontSize='20px'>График загрузки CPU</Text>
+												<Text
+													//fontSize='20px'
+													fontSize='clamp(12px, 2.5vh, 40px)'
+												>
+													График загрузки CPU
+												</Text>
 												<Text fontSize='20px'>
 													{deviceMonitor?.base_metrics.cpu_model}
 												</Text>
@@ -838,7 +856,8 @@ function Dashboard() {
 													height='50%'
 													alignItems='center'
 													justifyContent='center'
-													fontSize='30px'
+													//fontSize='30px'
+													fontSize='clamp(12px, 4.6vh, 60px)'
 													color='#CCCCCC'
 												>
 													<Text>не удалось получить данные</Text>
@@ -928,9 +947,15 @@ function Dashboard() {
 											py='2'
 											px='3'
 										>
-											<Text fontSize='20px'>Основные метрики</Text>
+											<Text
+												//fontSize='20px'
+												fontSize='clamp(12px, 2.5vh, 40px)'
+											>
+												Основные метрики
+											</Text>
 											<VStack
-												fontSize='16px'
+												//fontSize='16px'
+												fontSize='clamp(8px, 2vh, 40px)'
 												fontWeight='400'
 												px='1'
 												spaceY={-1.5}
@@ -993,7 +1018,12 @@ function Dashboard() {
 											py='2'
 											px='3'
 										>
-											<Text fontSize='20px'>Журнал событий</Text>
+											<Text
+												//fontSize='20px'
+												fontSize='clamp(12px, 2.5vh, 40px)'
+											>
+												Журнал событий
+											</Text>
 											<VStack
 												h='85%'
 												overflowY='auto'
@@ -1013,7 +1043,8 @@ function Dashboard() {
 														alignItems='center'
 														justifyContent='center'
 														h='70%' // Такая же высота как у графика
-														fontSize='30px'
+														//fontSize='30px'
+														fontSize='clamp(12px, 4.6vh, 60px)'
 														color='#CCCCCC'
 													>
 														<Text>журнал событий пуст</Text>
@@ -1065,10 +1096,16 @@ function Dashboard() {
 										py='2'
 										px='3'
 									>
-										<Text fontSize='20px'>Статистика портов</Text>
+										<Text
+											//fontSize='20px'
+											fontSize='clamp(12px, 2.5vh, 40px)'
+										>
+											Статистика портов
+										</Text>
 										{deviceMonitor?.base_metrics.port ? (
 											<Chart.Root
-												fontSize='14px'
+												//fontSize='14px'
+												fontSize='clamp(8px, 1.6vh, 40px)'
 												boxSize='90%'
 												w='full'
 												mx='auto'
@@ -1108,7 +1145,8 @@ function Dashboard() {
 												height='80%'
 												alignItems='center'
 												justifyContent='center'
-												fontSize='30px'
+												//fontSize='30px'
+												fontSize='clamp(12px, 4.6vh, 60px)'
 												color='#CCCCCC'
 											>
 												<Text textAlign='center'>
@@ -1126,12 +1164,17 @@ function Dashboard() {
 										py='2'
 										px='3'
 									>
-										<Text fontSize='20px'>График Ping</Text>
+										<Text
+											//fontSize='20px'
+											fontSize='clamp(12px, 2.5vh, 40px)'
+										>
+											График Ping
+										</Text>
 										{deviceData.device_name ? (
-											<Chart.Root height={220} maxH='90%' chart={pingChart}>
+											<Chart.Root height={230} maxH='90%' chart={pingChart}>
 												<AreaChart
 													data={pingChart.data}
-													margin={{ left: 0, right: 0, top: 2, bottom: 0 }}
+													margin={{ left: -28, right: 5, top: 0, bottom: 0 }}
 												>
 													<CartesianGrid
 														stroke={pingChart.color('#CCCCCC')}
@@ -1147,7 +1190,7 @@ function Dashboard() {
 													<Tooltip
 														cursor={false}
 														animationDuration={100}
-														content={<Chart.Tooltip />}
+														content={<Chart.Tooltip hideLabel />}
 													/>
 													<Legend
 														content={<Chart.Legend />}
@@ -1172,7 +1215,8 @@ function Dashboard() {
 												alignItems='center'
 												justifyContent='center'
 												h='70%' // Такая же высота как у графика
-												fontSize='30px'
+												//fontSize='30px'
+												fontSize='clamp(12px, 4.6vh, 60px)'
 												color='#CCCCCC'
 											>
 												<Text>устройство не выбрано</Text>

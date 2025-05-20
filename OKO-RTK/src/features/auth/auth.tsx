@@ -58,9 +58,9 @@ const CustomTabs = () => {
 		setLoading(true)
 
 		if (password !== confirmPassword) {
-			toaster.error({
+			toaster.warning({
 				title: 'Ошибка',
-				description: 'Пароли не совпадают',
+				description: 'Пароли не совпадают!',
 				duration: 5000,
 			})
 			setLoading(false)
@@ -121,7 +121,7 @@ const CustomTabs = () => {
 			fontFamily='RostelecomBasis'
 			borderRadius={15}
 		>
-			<Toaster/>
+			<Toaster />
 			<Text color='black' fontSize='34px' fontWeight='700' mb={-4}>
 				{isRegistering ? 'Регистрация' : 'Авторизация'}
 			</Text>
@@ -139,10 +139,10 @@ const CustomTabs = () => {
 						bg={activeTab === 'user' ? '#7700FF' : '#F7F0FF'}
 						color={activeTab === 'user' ? 'white' : '#7700FF'}
 						onClick={() => {
-							setActiveTab('user') 
+							setActiveTab('user')
 							setLogin('')
-	                        setPassword('')
-	                        setConfirmPassword('')
+							setPassword('')
+							setConfirmPassword('')
 						}}
 						_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)' }}
 						fontWeight='500'
@@ -156,13 +156,13 @@ const CustomTabs = () => {
 					</Button>
 					<Button
 						flex={1}
-						bg={activeTab === 'admin' ? '#7700FF' : '#F7F0FF'}
+						bg={activeTab === 'admin' ? '#7700FF' : '#E9D7FD'}
 						color={activeTab === 'admin' ? 'white' : '#7700FF'}
 						onClick={() => {
-							setActiveTab('admin') 
+							setActiveTab('admin')
 							setLogin('')
-	            setPassword('')
-	            setConfirmPassword('')
+							setPassword('')
+							setConfirmPassword('')
 						}}
 						_hover={{ boxShadow: '0 0px 15px rgba(119, 0, 255, 0.3)' }}
 						fontWeight='500'
@@ -170,6 +170,8 @@ const CustomTabs = () => {
 						h='48px'
 						borderRadius={10}
 						_focus={{ outline: 'none' }}
+						disabled
+						cursor='disabled'
 						transition='all 0.2s ease-in-out'
 					>
 						Админ

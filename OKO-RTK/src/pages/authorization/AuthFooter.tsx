@@ -53,7 +53,7 @@ function Footer() {
 						fontFamily='RostelecomBasis'
 						textAlign={{ base: 'left', md: 'right' }}
 					>
-						2025 ПАО "Ростелеком"
+						2025 "ОКО РТК"
 					</Text>
 				</Flex>
 			</Stack>

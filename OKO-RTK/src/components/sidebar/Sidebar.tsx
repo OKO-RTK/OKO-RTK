@@ -7,7 +7,7 @@ import {
 	Separator,
 	IconButton,
 } from '@chakra-ui/react'
-import { FiHome, FiList, FiMap, FiLogOut, FiSettings } from 'react-icons/fi'
+import { FiHome, FiList, FiMap, FiPower, FiSettings } from 'react-icons/fi'
 import { NavLink } from 'react-router-dom'
 import '../../index.css'
 
@@ -127,7 +127,7 @@ function Sidebar(){
 						_hover={{ color: 'white', bg: 'rgba(90, 96, 109, 0.2)' }}
 						transition='all 0.2s ease-in-out'
 					>
-						<FiLogOut className='w-[50%] h-[50%] stroke-[1.5] transition-colors duration-200 ease-in-out' />
+						<FiPower className='w-[50%] h-[50%] stroke-[1.5] transition-colors duration-200 ease-in-out' />
 					</Box>
 				</NavLink>
 			</VStack>
